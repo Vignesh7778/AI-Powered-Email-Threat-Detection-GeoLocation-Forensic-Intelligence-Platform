@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./data/email_threat_intel.db"
 
     # Storage
-    STORAGE_PATH: str = "./data/storage"
+    STORAGE_PATH: str = "/tmp/storage" if (os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME")) else "./data/storage"
     MAX_UPLOAD_SIZE_BYTES: int = 25 * 1024 * 1024  # 25 MB
 
     # Groq AI Intelligence & Reasoning

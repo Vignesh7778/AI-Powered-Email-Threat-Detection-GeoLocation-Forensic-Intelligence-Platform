@@ -29,7 +29,15 @@ async def ingest_email(
     db: Session = Depends(get_db)
 ):
     submission_id = str(uuid.uuid4())
-    os.makedirs(settings.STORAGE_PATH, exist_ok=True)
+    storage_dir = settings.STORAGE_PATH
+    try:
+        os.makedirs(storage_dir, exist_ok=True)
+    except Exception:
+        storage_dir = "/tmp/storage"
+        try:
+            os.makedirs(storage_dir, exist_ok=True)
+        except Exception:
+            pass
 
     if file:
         file_bytes = await file.read()
@@ -43,17 +51,20 @@ async def ingest_email(
     sha256_hash = hashlib.sha256(file_bytes).hexdigest()
     import re
     safe_file_name = re.sub(r'[^a-zA-Z0-9_\.-]', '_', file_name or 'unnamed.eml')[:80]
-    storage_ref = os.path.join(settings.STORAGE_PATH, f"{submission_id[:8]}_{safe_file_name}")
+    storage_ref = os.path.join(storage_dir, f"{submission_id[:8]}_{safe_file_name}")
     try:
         with open(storage_ref, "wb") as f:
             f.write(file_bytes)
     except Exception:
-        storage_ref = os.path.join(settings.STORAGE_PATH, f"{submission_id[:8]}.eml")
-        with open(storage_ref, "wb") as f:
-            f.write(file_bytes)
+        storage_ref = os.path.join(storage_dir, f"{submission_id[:8]}.eml")
+        try:
+            with open(storage_ref, "wb") as f:
+                f.write(file_bytes)
+        except Exception:
+            pass
 
     # Parse .eml
-    parsed = email_parser.parse_raw_eml(file_bytes, submission_id, settings.STORAGE_PATH)
+    parsed = email_parser.parse_raw_eml(file_bytes, submission_id, storage_dir)
 
     # Persist initial submission record
     sub = Submission(
