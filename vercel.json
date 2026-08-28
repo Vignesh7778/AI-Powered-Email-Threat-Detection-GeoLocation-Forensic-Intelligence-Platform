@@ -1,0 +1,28 @@
+{
+    "services": {
+        "frontend": {
+            "root": "AI-Powered Email Threat Detection, GeoLocation & Forensic Intelligence Platform Project/frontend",
+            "framework": "vite"
+        },
+        "backend": {
+            "root": "AI-Powered Email Threat Detection, GeoLocation & Forensic Intelligence Platform Project/backend",
+            "entrypoint": "app.main:app"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": {
+                "type": "service",
+                "service": "backend"
+            }
+        },
+        {
+            "source": "/(.*)",
+            "destination": {
+                "type": "service",
+                "service": "frontend"
+            }
+        }
+    ]
+}
