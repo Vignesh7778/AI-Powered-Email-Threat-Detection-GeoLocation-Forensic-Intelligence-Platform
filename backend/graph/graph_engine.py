@@ -1,4 +1,4 @@
-﻿import uuid
+import uuid
 from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from backend.app.schemas.schemas import (

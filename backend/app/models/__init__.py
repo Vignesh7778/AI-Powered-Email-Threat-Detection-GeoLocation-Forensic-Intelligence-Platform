@@ -1,4 +1,4 @@
-﻿from backend.app.models.models import (
+from backend.app.models.models import (
     User, Submission, Assessment, Case,
     CaseSubmission, Alert, ChainOfCustody,
     PrivacyConfig, Campaign

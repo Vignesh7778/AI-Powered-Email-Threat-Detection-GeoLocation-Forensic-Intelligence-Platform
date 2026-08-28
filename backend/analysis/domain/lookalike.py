@@ -1,4 +1,4 @@
-﻿from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple
 from backend.app.schemas.schemas import LookalikeCheckResponse
 
 class LookalikeDetector:

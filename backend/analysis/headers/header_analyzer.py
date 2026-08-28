@@ -1,4 +1,4 @@
-﻿import re
+import re
 from typing import Dict, Any, List, Optional
 from email import message_from_string
 from backend.app.schemas.schemas import RelayHop, HeaderAnomaly, HeaderParseResponse

@@ -1,4 +1,4 @@
-﻿from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional
 from backend.app.schemas.schemas import AttachmentScanRequest, AttachmentScanResponse
 
 class AttachmentScanner:
