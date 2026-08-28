@@ -10,14 +10,25 @@ db_url = settings.DATABASE_URL
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
-fallback_sqlite = "sqlite:///./data/email_threat_intel.db"
+is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+fallback_sqlite = "sqlite:////tmp/email_threat_intel.db" if is_vercel else "sqlite:///./data/email_threat_intel.db"
 
 def build_engine(url: str):
     c_args = {}
     if url.startswith("sqlite"):
         c_args = {"check_same_thread": False}
-        os.makedirs("./data", exist_ok=True)
-        os.makedirs(settings.STORAGE_PATH, exist_ok=True)
+        db_path = url.replace("sqlite:///", "")
+        db_dir = os.path.dirname(db_path)
+        if db_dir:
+            try:
+                os.makedirs(db_dir, exist_ok=True)
+            except Exception:
+                pass
+        try:
+            target_storage = "/tmp/storage" if is_vercel else settings.STORAGE_PATH
+            os.makedirs(target_storage, exist_ok=True)
+        except Exception:
+            pass
     return create_engine(url, connect_args=c_args, echo=False)
 
 # Try Supabase PostgreSQL connection; fallback if password placeholder or connection issue

@@ -106,10 +106,13 @@ app.include_router(forensics.router, prefix="/forensics", tags=["Cyber Forensics
 app.include_router(ml.router, prefix="/ml", tags=["AI/ML Detection Engine"])
 app.include_router(internal.router, prefix="/internal", tags=["Internal Pipeline"])
 
-# API v1 Router
+# API v1 Router - Mount on both /api/v1 and /v1 for Vercel/proxy compatibility
 app.include_router(api_router, prefix=settings.API_V1_STR)
+if settings.API_V1_STR != "/v1":
+    app.include_router(api_router, prefix="/v1")
 
 @app.get("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
 def health_check():
     return {
         "status": "healthy",
