@@ -6,6 +6,12 @@ This file contains build, run, deploy instructions, codebase structure, and codi
 
 ## 🚀 Build & Run Commands
 
+### ⚡ Quick Start (Both Backend & Frontend)
+Run the root script to start both backend and frontend concurrently:
+```bash
+./run.sh
+```
+
 ### 1. Frontend (React / Vite)
 Located in `/frontend`.
 

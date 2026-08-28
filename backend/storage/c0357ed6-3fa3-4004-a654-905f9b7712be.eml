@@ -1,0 +1,413 @@
+Delivered-To: bhuvaneshgg01@gmail.com
+Received: by 2002:a05:6022:32aa:b0:109:7e44:f567 with SMTP id bw42csp635188lab;
+        Fri, 28 Aug 2026 00:23:14 -0700 (PDT)
+X-Received: by 2002:a05:6a00:194a:b0:847:9267:2104 with SMTP id d2e1a72fcca58-85629a24448mr9757545b3a.12.1787901794614;
+        Fri, 28 Aug 2026 00:23:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1787901794; cv=none;
+        d=google.com; s=arc-20260327;
+        b=JJr/6XeyBNI5niFt3ThUuyZ65F0Q5RE1xzSTooy4tSf0dl04LLfQUti32vv0GxV3x5
+         v9QsqNyw3p5Eoy4cSXhZBUgiGONNRGkTiVxsZEd9SL5fdbbOATBbWGwWT7xJ2oQls1qx
+         IGGt3CkDh6G7n8ip1OrSxAGBVfhmxSSQdkhZjLG7nmnLHsX8EFkX/tggrE7wgnFfpU2f
+         bMWCF8IXYPTv4psXwFvimzpuTZYEEJeWC76tqSYg7S1xsHRvSQ/+vAEPS8cufsS0xRx8
+         hI1ZaRYXTkeBziFkQYEmshIiL0QnjcxrP+EI6avwcF9LVwQ8myqnJ2fawHBtMycPle+b
+         JMYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=feedback-id:date:message-id:mime-version:subject:to:from
+         :dkim-signature:dkim-signature;
+        bh=R1W+hW2uocXvNAWVrPUffqmBkqwmsPjHgI0iNquJnnU=;
+        fh=7va1Z2+O1mniRz4WRSwIIdwpH2jd522+d8+OjKFc0Zk=;
+        b=WtOv8OS0pWo/gGIt+nOmvVyNio+dugsTLiPkB1IOMIQeKaVl4pVEiJo6CDqd/0MGqR
+         4/jPux78vKDnM8tCdVGMPHhy/HJrm2g+n+Nu1gj30exN+XiPP+TFgDm7sdVLWTEobGGV
+         e4+D9kAajGfP8ZRQIkLtOPcssyvAd5XAmz/Unc/PgyZwDqW2btSmzlWTPldRiu9g3cRN
+         T/kCm8n8Da1MQET8JU2VfB6OGqqK2WR6R52PXlJuwtORf7CoWPvChFEszTigU8d6NKUM
+         eVp3uVG4vR460zYsD+QVP1+Im3h0N0nCPYx/bXGXg99f32XoodGJl30Ve1rulOPAdggl
+         +yWw==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@groww.in header.s=7euxngxtuxxvdygkupjeluchoslcosnr header.b=pBm5luAn;
+       dkim=pass header.i=@amazonses.com header.s=rlntogby6xsxlfnvyxwnvvhttakdsqto header.b=LfEJP2bk;
+       spf=pass (google.com: domain of 010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com designates 76.223.181.148 as permitted sender) smtp.mailfrom=010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=groww.in
+Return-Path: <010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com>
+Received: from c181-148.smtp-out.ap-south-1.amazonses.com (c181-148.smtp-out.ap-south-1.amazonses.com. [76.223.181.148])
+        by mx.google.com with ESMTPS id 41be03b00d2f7-cc1f36af521si1551482a12.143.2026.08.28.00.23.14
+        for <bhuvaneshgg01@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Aug 2026 00:23:14 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com designates 76.223.181.148 as permitted sender) client-ip=76.223.181.148;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@groww.in header.s=7euxngxtuxxvdygkupjeluchoslcosnr header.b=pBm5luAn;
+       dkim=pass header.i=@amazonses.com header.s=rlntogby6xsxlfnvyxwnvvhttakdsqto header.b=LfEJP2bk;
+       spf=pass (google.com: domain of 010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com designates 76.223.181.148 as permitted sender) smtp.mailfrom=010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=groww.in
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=7euxngxtuxxvdygkupjeluchoslcosnr; d=groww.in; t=1787901793;
+	h=From:To:Subject:MIME-Version:Content-Type:Message-ID:Date;
+	bh=7ISSg4V++mxUgHKVVo1t7+kb0LmD/2Ecq5CKnVhorwE=;
+	b=pBm5luAnKQ3jrjSVa5rvMlTBAxcd7UJ1kEr+Pt4/i61Nh881fobIEDWJfgNKEMU+
+	7vSjELJW2lD/cw6xBwJDCGDoGJ/VV72uu7fmU/c3k2pUbWSkqyZzwmZDIeE75ORXfAF
+	bUuTbVY5j56e7z/CsBz5ntg+KvX812BOQBqMLZpg=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=rlntogby6xsxlfnvyxwnvvhttakdsqto; d=amazonses.com; t=1787901793;
+	h=From:To:Subject:MIME-Version:Content-Type:Message-ID:Date:Feedback-ID;
+	bh=7ISSg4V++mxUgHKVVo1t7+kb0LmD/2Ecq5CKnVhorwE=;
+	b=LfEJP2bkiRAatp3bJ6YkE/5nfpstLSZeQ0uZCuQJ/iqnX42Od2AEhRZ3C7KLlflb
+	w6Rrownp8lIUbhGG8hPDjO8B4txW3H80JBk7ntYlh98oXsbi97HidKunOcdOGJ22LwN
+	38PCffmuRugPgJoPBVFnMsIEKqLLMZDYaMrS3vLk=
+From: Groww <noreply@groww.in>
+To: bhuvaneshgg01@gmail.com
+Subject: Lumino Industries IPO is live
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=divider
+Message-ID: <010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000@ap-south-1.amazonses.com>
+Date: Fri, 28 Aug 2026 07:23:13 +0000
+Feedback-ID: ::1.ap-south-1.GRyIMCUjEX7EUPU8zEq7i2m/nxOouJ7zWWkOoCAkEQ8=:AmazonSES
+X-SES-Outgoing: 2026.08.28-76.223.181.148
+
+--divider
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html>
+ <head>
+  <link href=3D"https://fonts.googleapis.com/css?family=3DOpen+Sans:300,400=
+,500,600,700" rel=3D"stylesheet" type=3D"text/css">
+  <link href=3D"https://fonts.googleapis.com/css?family=3DRoboto:300,400,50=
+0,600,700" rel=3D"stylesheet" type=3D"text/css">
+  <link href=3D"https://fonts.googleapis.com/css?family=3DInter+Tight:300,4=
+00,500,600,700" rel=3D"stylesheet" type=3D"text/css">
+ </head>
+ <body style=3D"box-sizing: border-box; margin: 0;">
+  <div style=3D"display:none;font-size:1px;color:#ffffff;line-height:1px;ma=
+x-height:0px;max-width:0px;opacity:0;overflow:hidden;">Check complete detai=
+ls of the IPO&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C</div>
+  <link href=3D"https://fonts.googleapis.com/css?family=3DOpen+Sans:300,400=
+,500,600,700" rel=3D"stylesheet" type=3D"text/css">
+  <link href=3D"https://fonts.googleapis.com/css?family=3DRoboto:300,400,50=
+0,600,700" rel=3D"stylesheet" type=3D"text/css">
+  <link href=3D"https://fonts.googleapis.com/css?family=3DInter+Tight:300,4=
+00,500,600,700" rel=3D"stylesheet" type=3D"text/css">
+  <div id=3D"i3xo3" class=3D"email-wrapper" style=3D"box-sizing: border-box=
+; width: 100%; background-color: #ffffff;">
+   <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=
+=3D"100%" align=3D"center" bgcolor=3D"#ffffff" id=3D"ii0hq" class=3D"email-=
+container" style=3D"box-sizing: border-box; border-collapse: collapse; max-=
+width: 500px; background-color: #ffffff; margin: 0px auto 0px auto;">
+    <tbody id=3D"iiv8h" style=3D"box-sizing: border-box;">
+     <!-- =E2=94=80=E2=94=80 LOGO =E2=94=80=E2=94=80 -->
+     <tr id=3D"im822p" style=3D"box-sizing: border-box;">
+      <td align=3D"center" id=3D"inysti" style=3D"box-sizing: border-box; p=
+adding-top: 0px;"><img src=3D"https://cms-resources.groww.in/uploads/logo_2=
+231ba8acf.png" alt=3D"Groww" id=3D"izp3n1" style=3D"box-sizing: border-box;=
+ width: 100%; height: auto;"></td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 HERO IMAGE =E2=94=80=E2=94=80 -->
+     <tr id=3D"i5vl3" style=3D"box-sizing: border-box;">
+      <td align=3D"center" id=3D"ik4rh" class=3D"hero-cell" style=3D"box-si=
+zing: border-box; word-break: break-word; text-align: center; padding: 0px =
+30px 10px 30px;"><img src=3D"https://cms-resources.groww.in/uploads/Lumino_=
+Industries_Ltd_1_f015847a6b.png" alt=3D"Annu IPO" width=3D"440" id=3D"ighkp=
+" style=3D"box-sizing: border-box; border-image-source: none; border-image-=
+slice: 100%; border-image-width: 1; border-image-outset: 0; border-image-re=
+peat: stretch; outline-color: initial; outline-style: none; outline-width: =
+initial; text-decoration-line: none; text-decoration-thickness: initial; te=
+xt-decoration-style: initial; text-decoration-color: initial; width: 100%; =
+max-width: 440px; height: auto; display: inline-block; border-top-left-radi=
+us: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; bor=
+der-bottom-left-radius: 6px; margin: 0px auto 0px auto; border: 0px none cu=
+rrentcolor;"></td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 IPO DETAILS =E2=94=80=E2=94=80 -->
+     <tr id=3D"im23g" style=3D"box-sizing: border-box;">
+      <td align=3D"left" id=3D"ivrl2" class=3D"content-cell" style=3D"box-s=
+izing: border-box; word-break: break-word; font-family: 'Open Sans', Arial,=
+ sans-serif; font-size: 14px; color: #000000; line-height: 1.6; text-align:=
+ left; padding: 16px 30px 16px 30px;">
+       <p id=3D"irt57" style=3D"box-sizing: border-box; margin: 0px 0px 8px=
+ 0px;"><strong id=3D"iwqmd" style=3D"box-sizing: border-box;">New IPO open =
+to apply:</strong> Lumino Industries</p>
+       <p id=3D"ieb9v" style=3D"box-sizing: border-box;"><strong id=3D"ilbz=
+h" style=3D"box-sizing: border-box;">Bidding period: </strong><span draggab=
+le=3D"true" style=3D"box-sizing: border-box;">27</span>&nbsp;Aug =E2=80=93 =
+31 Aug</p>
+       <p id=3D"izwfy" style=3D"box-sizing: border-box;"><strong id=3D"i4wq=
+q" style=3D"box-sizing: border-box;">Price per share:</strong> =E2=82=B978 =
+=E2=80=93 =E2=82=B982 per share</p>
+       <p id=3D"ikpm2" style=3D"box-sizing: border-box;"><strong id=3D"i3dp=
+a" style=3D"box-sizing: border-box;">Lot size:</strong> 182 (i.e. you'll ha=
+ve to apply for multiples of 182 shares)</p>
+      </td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 CTA BUTTON =E2=94=80=E2=94=80 -->
+     <tr id=3D"ir2h9" style=3D"box-sizing: border-box;">
+      <td align=3D"left" id=3D"i0leg" class=3D"btn-cell" style=3D"box-sizin=
+g: border-box; word-break: break-word; text-align: left; padding: 8px 30px =
+20px 30px;"><!-- [if mso]>
+<v:roundrect xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:w=3D"urn:schem=
+as-microsoft-com:office:word"
+href=3D"https://groww.in/ipo/milky-mist-ipo"
+style=3D"height:40px; v-text-anchor:middle; width:162px;" arcsize=3D"10%"
+stroke=3D"f" fillcolor=3D"#4f74ee">
+<w:anchorlock/>
+<center style=3D"color:#ffffff; font-family:'Open Sans',Arial,sans-serif; f=
+ont-size:14px; font-weight:600;">APPLY NOW</center>
+</v:roundrect>
+<![endif]--><!-- [if !mso]><!--><a href=3D"https://k97t77cm.r.ap-south-1.aw=
+strack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick-tracking%3Fr=
+edirect_uri=3Dhttps%253A%252F%252Fgroww.in%252Fipo%252Flumino-industries-ip=
+o%26hyperlink_name=3DAPPLY%2520NOW%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI=
+1NiJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4M=
+zY0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0L=
+uw6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1755164-455d-4c63-8a73=
+-ed90db7673f4-000000/T9pmbVE9mJXsTwXLIZR_LJq_bWs=3D258" target=3D"_blank" r=
+el=3D"noopener" id=3D"if8b1" class=3D"btn-link" style=3D"box-sizing: border=
+-box; display: inline-block; background-color: #4f74ee; text-decoration-lin=
+e: none; text-decoration-thickness: initial; text-decoration-style: initial=
+; text-decoration-color: initial; font-family: 'Open Sans', Arial, sans-ser=
+if; font-size: 14px; font-weight: 600; border-top-left-radius: 4px; border-=
+top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-=
+radius: 4px; letter-spacing: 0.3px; text-align: center; color: #ffffff; pad=
+ding: 11px 40px 11px 40px;"> APPLY NOW </a><!--<![endif]--></td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 DIVIDER =E2=94=80=E2=94=80 -->
+     <tr id=3D"io48t" style=3D"box-sizing: border-box;">
+      <td id=3D"irplk" class=3D"divider-cell" style=3D"box-sizing: border-b=
+ox; word-break: break-word; padding: 4px 30px 4px 30px;">
+       <hr id=3D"ifn8d" class=3D"divider" style=3D"box-sizing: border-box; =
+border-image-source: none; border-image-slice: 100%; border-image-width: 1;=
+ border-image-outset: 0; border-image-repeat: stretch; border-width: 1px me=
+dium medium medium; border-color: #bbbbbb currentcolor currentcolor current=
+color; border-style: solid none none none; margin: 0px;">
+      </td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 ABOUT =E2=94=80=E2=94=80 -->
+     <tr id=3D"i8hfp" style=3D"box-sizing: border-box;">
+      <td align=3D"left" id=3D"iea3k" class=3D"about-cell" style=3D"box-siz=
+ing: border-box; word-break: break-word; font-family: 'Open Sans', Arial, s=
+ans-serif; font-size: 14px; color: #000000; line-height: 1.6; text-align: l=
+eft; padding: 14px 30px 16px 30px;">
+       <p id=3D"i4907" style=3D"box-sizing: border-box; margin: 0px;"><stro=
+ng id=3D"ixswf" style=3D"box-sizing: border-box;">More about the company:</=
+strong>
+        <br id=3D"iw1tj" style=3D"box-sizing: border-box;">
+        It is an engineering, procurement and construction (EPC) and manufa=
+cturing firm specializing in power transmission, distribution infrastructur=
+e, specialized conductors and electrical cables.</p>
+      </td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 HELP LINK =E2=94=80=E2=94=80 -->
+     <tr id=3D"ibhx1" style=3D"box-sizing: border-box;">
+      <td align=3D"left" id=3D"i7iy5" class=3D"help-cell" style=3D"box-sizi=
+ng: border-box; word-break: break-word; font-family: 'Open Sans', Arial, sa=
+ns-serif; font-size: 14px; color: #000000; line-height: 1.6; text-align: le=
+ft; padding: 4px 30px 18px 30px;">Got a question? Find all your answers at =
+our <a href=3D"https://k97t77cm.r.ap-south-1.awstrack.me/L0/https:%2F%2Fcli=
+ent-pixel.groww.in%2Femail%2Fclick-tracking%3Fredirect_uri=3Dhttps%253A%252=
+F%252Fapp.groww.in%252Fv3cO%252Fa6549d1f%26hyperlink_name=3Dhelp%2520center=
+%2520%E2%86%92%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbnN0YW5jZV=
+9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiLCJhY3Rpb=
+25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2ivaqEpSW=
+xkoIK7telSFU/1/010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000=
+/KYonrHoKTgkcNixkTymoKYVoKiI=3D258" target=3D"_blank" rel=3D"noopener" id=
+=3D"iaoij" style=3D"box-sizing: border-box; color: #4f74ee; text-decoration=
+-line: underline; text-decoration-thickness: initial; text-decoration-style=
+: initial; text-decoration-color: initial;">help center =E2=86=92</a></td>
+     </tr>
+     <!-- =E2=94=80=E2=94=80 FOOTER / SIGNATURE =E2=94=80=E2=94=80 -->
+     <tr id=3D"iqbto" style=3D"box-sizing: border-box;">
+      <td id=3D"intsf" class=3D"footer-cell" style=3D"box-sizing: border-bo=
+x; word-break: break-word; padding: 14px 30px 24px 30px;">
+       <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" wid=
+th=3D"100%" id=3D"i944w" class=3D"footer-inner" style=3D"box-sizing: border=
+-box; display: table; width: 100%; border-collapse: collapse;">
+        <tbody id=3D"ie6q1" style=3D"box-sizing: border-box;">
+         <tr id=3D"i1l5j" style=3D"box-sizing: border-box;">
+          <td valign=3D"middle" id=3D"ivn0d" width=3D"42" class=3D"footer-l=
+ogo-col" style=3D"box-sizing: border-box; word-break: break-word; display: =
+table-cell; vertical-align: middle; width: 42px; padding-right: 10px;"><img=
+ src=3D"https://cms-resources.groww.in/uploads/Logo_300x300_4f53f75276.png"=
+ alt=3D"Groww" width=3D"34" height=3D"34" id=3D"i2w8c" style=3D"box-sizing:=
+ border-box; border-image-source: none; border-image-slice: 100%; border-im=
+age-width: 1; border-image-outset: 0; border-image-repeat: stretch; outline=
+-color: initial; outline-style: none; outline-width: initial; text-decorati=
+on-line: none; text-decoration-thickness: initial; text-decoration-style: i=
+nitial; text-decoration-color: initial; width: 34px; height: auto; display:=
+ block; border: 0px none currentcolor;"></td>
+          <td valign=3D"middle" id=3D"ido2b" class=3D"footer-text-col" styl=
+e=3D"box-sizing: border-box; word-break: break-word; display: table-cell; v=
+ertical-align: middle; font-family: 'Open Sans', Arial, sans-serif; font-si=
+ze: 15px; font-weight: 500; color: #000000; line-height: 1.4;">Team Groww</=
+td>
+         </tr>
+        </tbody>
+       </table>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <table role=3D"presentation" width=3D"100%" cellspacing=3D"0" cellpadding=
+=3D"0" style=3D"text-align:center; font-family: Arial, sans-serif; color:#4=
+4475b;">
+   <tbody>
+    <tr>
+     <td style=3D"padding:16px;"><!-- Social Section -->
+      <p style=3D"margin:0; font-size:12px; font-weight:600;">Follow us yet=
+?</p>
+      <p style=3D"margin:4px 0 12px; font-size:12px; font-weight:300;">Our =
+social is a treasure box of finance content</p>
+      <!-- Social Icons -->
+      <table role=3D"presentation" align=3D"center" cellspacing=3D"0" cellp=
+adding=3D"0">
+       <tbody>
+        <tr>
+         <td style=3D"padding:0 6px;"><a href=3D"https://k97t77cm.r.ap-sout=
+h-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick-tracki=
+ng%3Fredirect_uri=3Dhttps%253A%252F%252Fwww.youtube.com%252Fchannel%252FUCw=
+5TLrz3qADabwezTEcOmgQ%26hyperlink_name=3Dfooter_https:%2F%2Fcms-resources.g=
+roww.in%2Fuploads%2FSocial1_ac701193e5.png%26data=3DeyJ0eXAiOiJKV1QiLCJhbGc=
+iOiJIUzI1NiJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQ=
+zA1ODM4MzY0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gj=
+uf8huF0Luw6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1755164-455d-4=
+c63-8a73-ed90db7673f4-000000/3-yO2yQxDuPPQfICXBp4syon1VY=3D258" target=3D"_=
+blank"> <img src=3D"https://cms-resources.groww.in/uploads/Social1_ac701193=
+e5.png" width=3D"30" alt=3D"YouTube"> </a></td>
+         <td style=3D"padding:0 6px;"><a href=3D"https://k97t77cm.r.ap-sout=
+h-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick-tracki=
+ng%3Fredirect_uri=3Dhttps%253A%252F%252Fwww.instagram.com%252Fgroww_officia=
+l%26hyperlink_name=3Dfooter_https:%2F%2Fcms-resources.groww.in%2Fuploads%2F=
+Social2_f4bdc2f8cb.png%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbn=
+N0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiL=
+CJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2=
+ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f=
+4-000000/9gUNzwYfqcRknffLpVygz4GP5fY=3D258" target=3D"_blank"> <img src=3D"=
+https://cms-resources.groww.in/uploads/Social2_f4bdc2f8cb.png" width=3D"30"=
+ alt=3D"Instagram"> </a></td>
+         <td style=3D"padding:0 6px;"><a href=3D"https://k97t77cm.r.ap-sout=
+h-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick-tracki=
+ng%3Fredirect_uri=3Dhttps%253A%252F%252Ftwitter.com%252F_groww%26hyperlink_=
+name=3Dfooter_https:%2F%2Fcms-resources.groww.in%2Fuploads%2FSocial3_2d45d4=
+d2a6.png%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbnN0YW5jZV9pZCI6=
+IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiLCJhY3Rpb25faWQ=
+iOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2ivaqEpSWxkoIK7=
+telSFU/1/010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000/K97p2=
+iE1_nXPtNGI4Eznn_SSu8I=3D258" target=3D"_blank"> <img src=3D"https://cms-re=
+sources.groww.in/uploads/Social3_2d45d4d2a6.png" width=3D"30" alt=3D"Twitte=
+r"> </a></td>
+         <td style=3D"padding:0 6px;"><a href=3D"https://k97t77cm.r.ap-sout=
+h-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick-tracki=
+ng%3Fredirect_uri=3Dhttps%253A%252F%252Fwww.facebook.com%252Fgrowwapp%252F%=
+26hyperlink_name=3Dfooter_https:%2F%2Fcms-resources.groww.in%2Fuploads%2FSo=
+cial4_f70538baae.png%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbnN0=
+YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiLCJ=
+hY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2iv=
+aqEpSWxkoIK7telSFU/1/010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-=
+000000/DkqUC1ioPYjNHFZ_qaxqE9kiC6M=3D258" target=3D"_blank"> <img src=3D"ht=
+tps://cms-resources.groww.in/uploads/Social4_f70538baae.png" width=3D"30" a=
+lt=3D"Facebook"> </a></td>
+         <td style=3D"padding:0 6px;"><a href=3D"https://k97t77cm.r.ap-sout=
+h-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick-tracki=
+ng%3Fredirect_uri=3Dhttps%253A%252F%252Fwww.linkedin.com%252Fcompany%252Fgr=
+oww.in%252F%26hyperlink_name=3Dfooter_https:%2F%2Fcms-resources.groww.in%2F=
+uploads%2FSocial5_c1a95c25af.png%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1N=
+iJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY=
+0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw=
+6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1755164-455d-4c63-8a73-e=
+d90db7673f4-000000/bnZD51bjXdoPRLJyxMJOXgLII_8=3D258" target=3D"_blank"> <i=
+mg src=3D"https://cms-resources.groww.in/uploads/Social5_c1a95c25af.png" wi=
+dth=3D"30" alt=3D"LinkedIn"> </a></td>
+        </tr>
+       </tbody>
+      </table>
+      <!-- Company Info -->
+      <p style=3D"margin:16px 0 4px; font-size:12px; font-weight:600;">Grow=
+w Invest Tech Pvt. Ltd.</p>
+      <p style=3D"margin:0; font-size:12px; font-weight:300; line-height:1.=
+5;">Registered office: Vaishnavi Tech Park, South Tower, 3rd Floor, Sarjapu=
+r Main Road, Bellandur, Bengaluru, Karnataka - 560103</p>
+      <!-- Unsubscribe -->
+      <p style=3D"margin:12px 0; font-size:12px; font-weight:300; line-heig=
+ht:1.5;">You're receiving this email because you're a Groww user. You can <=
+a href=3D"https://k97t77cm.r.ap-south-1.awstrack.me/L0/https:%2F%2Fclient-p=
+ixel.groww.in%2Femail%2Fclick-tracking%3Fredirect_uri=3Dhttps%253A%252F%252=
+Fgroww.in%252Funsubscribe%253Fdata%253DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9=
+.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfZW1haWxfaWQiOiJiaHV2YW5lc2hnZzAxQG=
+dtYWlsLmNvbSIsImFjdGlvbl9pZCI6IjQiLCJzZW5kZXJfZW1haWxfaWQiOiJub3JlcGx5QGdyb=
+3d3LmluIiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.F1qYL165Jmhi9uA6xU1JT2-zcbhf3ZpTLZ4=
+9GcDZpjk%26hyperlink_name=3Dfooter_unsubscribe%2520here%26data=3DeyJ0eXAiOi=
+JKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3Vu=
+dF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI=
+0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1=
+755164-455d-4c63-8a73-ed90db7673f4-000000/JkIrqXtFSHdNa6Psvvi80ZKV_yo=3D258=
+" style=3D"text-decoration:underline; color:#44475b;">unsubscribe here</a>.=
+</p>
+      <!-- Help -->
+      <p style=3D"margin:12px 0; font-size:12px;">Need help? <a href=3D"htt=
+ps://k97t77cm.r.ap-south-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in=
+%2Femail%2Fclick-tracking%3Fredirect_uri=3Dhttps%253A%252F%252Fgroww.app.li=
+nk%252Fhelp%26hyperlink_name=3Dfooter_We're%2520here%2520for%2520you%26data=
+=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInV=
+zZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcG=
+FpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901=
+a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000/_3VFnmuxQN1k78PeDF2E=
+a_CZuxA=3D258" target=3D"_blank" style=3D"text-decoration:underline; color:=
+#44475b;"> We're here for you </a></p>
+      <!-- Divider -->
+      <hr style=3D"border:none; border-top:1px solid #ccc; margin:16px 0;">
+      <!-- Legal Links -->
+      <p style=3D"font-size:11px; margin:0;"><a href=3D"https://k97t77cm.r.=
+ap-south-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2Fclick=
+-tracking%3Fredirect_uri=3Dhttps%253A%252F%252Fgroww.in%252Fabout-us%26hype=
+rlink_name=3Dfooter_About%2520Us%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1N=
+iJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY=
+0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw=
+6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1755164-455d-4c63-8a73-e=
+d90db7673f4-000000/SksF4_H5fALFCTYZTEHZZBhkWEw=3D258" target=3D"_blank" sty=
+le=3D"color:#44475b; text-decoration:underline;">About Us</a> | <a href=3D"=
+https://k97t77cm.r.ap-south-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww=
+.in%2Femail%2Fclick-tracking%3Fredirect_uri=3Dhttps%253A%252F%252Fgroww.in%=
+252Fterms-and-conditions%26hyperlink_name=3Dfooter_Terms%2520%26%2520Condit=
+ions%26data=3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbnN0YW5jZV9pZCI6IjEw=
+MTM3OSIsInVzZXJfYWNjb3VudF9pZCI6IkFDQzA1ODM4MzY0NDI5ODAiLCJhY3Rpb25faWQiOiI=
+0IiwiY2FtcGFpZ25faWQiOiI0MDU0NiJ9.3Gjuf8huF0Luw6ZJWzIXGe2ivaqEpSWxkoIK7telS=
+FU/1/010901a047405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000/NNy4Y9lHm=
+Ad6Aqzl_fFeMbyiA0w=3D258" target=3D"_blank" style=3D"color:#44475b; text-de=
+coration:underline;">Terms &amp; Conditions</a> | <a href=3D"https://k97t77=
+cm.r.ap-south-1.awstrack.me/L0/https:%2F%2Fclient-pixel.groww.in%2Femail%2F=
+click-tracking%3Fredirect_uri=3Dhttps%253A%252F%252Fgroww.in%252Fprivacy-po=
+licy%26hyperlink_name=3Dfooter_Privacy%2520Policy%26data=3DeyJ0eXAiOiJKV1Qi=
+LCJhbGciOiJIUzI1NiJ9.eyJpbnN0YW5jZV9pZCI6IjEwMTM3OSIsInVzZXJfYWNjb3VudF9pZC=
+I6IkFDQzA1ODM4MzY0NDI5ODAiLCJhY3Rpb25faWQiOiI0IiwiY2FtcGFpZ25faWQiOiI0MDU0N=
+iJ9.3Gjuf8huF0Luw6ZJWzIXGe2ivaqEpSWxkoIK7telSFU/1/010901a047405635-c1755164=
+-455d-4c63-8a73-ed90db7673f4-000000/FfGLjdHaAS5-wi5KWbzBuc-Bh1s=3D258" targ=
+et=3D"_blank" style=3D"color:#44475b; text-decoration:underline;">Privacy P=
+olicy</a></p>
+      <!-- Disclaimer -->
+      <p style=3D"margin:16px 0 0; font-size:11px; line-height:1.4; text-al=
+ign:justify;">Disclaimer: This communication is for general informational p=
+urposes only and does not constitute investment advice. Investments in secu=
+rities markets are subject to market risks. Read all related documents care=
+fully before investing. Past performance is not indicative of future result=
+s. Groww Invest Tech Pvt. Ltd. - SEBI Registration No.: INZ000301838, Resea=
+rch Analyst No.: INH200008662, AMFI Registration No.: ARN-111686.</p></td>
+    </tr>
+   </tbody>
+  </table>
+ <img alt=3D"" src=3D"https://k97t77cm.r.ap-south-1.awstrack.me/I0/010901a0=
+47405635-c1755164-455d-4c63-8a73-ed90db7673f4-000000/s5MYp4iOtedVxdQ3DzHD-1=
+ysAv0=3D258" style=3D"display: none; width: 1px; height: 1px;">
+</body>
+</html>
+
+--divider--
