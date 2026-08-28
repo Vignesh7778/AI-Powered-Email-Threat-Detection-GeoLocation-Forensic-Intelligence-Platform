@@ -33,6 +33,8 @@ def build_engine(url: str):
             os.makedirs(target_storage, exist_ok=True)
         except Exception:
             pass
+    elif url.startswith("postgresql"):
+        c_args = {"connect_timeout": 3}
     return create_engine(url, connect_args=c_args, echo=False)
 
 # Try Supabase PostgreSQL connection; fallback if password placeholder or connection issue

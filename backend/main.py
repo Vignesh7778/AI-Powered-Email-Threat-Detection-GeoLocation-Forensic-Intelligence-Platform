@@ -1,5 +1,6 @@
 import sys
 import os
+import types
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
@@ -9,8 +10,15 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
+# Ensure 'backend' is recognized as a package pointing to current_dir
+if "backend" not in sys.modules:
+    backend_pkg = types.ModuleType("backend")
+    backend_pkg.__path__ = [current_dir]
+    backend_pkg.__file__ = os.path.join(current_dir, "__init__.py")
+    sys.modules["backend"] = backend_pkg
+
 from backend.app.main import app
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
-    uvicorn.run('backend.app.main:app', host='0.0.0.0', port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
