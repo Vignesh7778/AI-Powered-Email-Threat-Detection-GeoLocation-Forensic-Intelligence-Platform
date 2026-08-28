@@ -13,6 +13,10 @@ if db_url.startswith("postgres://"):
 is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 fallback_sqlite = "sqlite:////tmp/email_threat_intel.db" if is_vercel else "sqlite:///./data/email_threat_intel.db"
 
+# Force /tmp database on Vercel if SQLite is used
+if is_vercel and db_url.startswith("sqlite"):
+    db_url = fallback_sqlite
+
 def build_engine(url: str):
     c_args = {}
     if url.startswith("sqlite"):
@@ -33,8 +37,8 @@ def build_engine(url: str):
 
 # Try Supabase PostgreSQL connection; fallback if password placeholder or connection issue
 engine = None
-if "[YOUR-PASSWORD]" in db_url or "YOUR_ACTUAL_PASSWORD_HERE" in db_url:
-    logger.info("Supabase placeholder detected in DATABASE_URL. Using SQLite database until Supabase password is provided.")
+if "[YOUR-PASSWORD]" in db_url or "YOUR_ACTUAL_PASSWORD_HERE" in db_url or "[YOUR_PASSWORD]" in db_url:
+    logger.info("Supabase placeholder detected in DATABASE_URL. Using SQLite database.")
     engine = build_engine(fallback_sqlite)
 else:
     try:
@@ -42,9 +46,10 @@ else:
         with test_engine.connect() as conn:
             pass
         engine = test_engine
-        logger.info("Successfully connected to Supabase PostgreSQL database!")
+        if not db_url.startswith("sqlite"):
+            logger.info("Successfully connected to PostgreSQL database!")
     except Exception as e:
-        logger.warning(f"Could not connect to Supabase PostgreSQL ({e}). Falling back to SQLite.")
+        logger.warning(f"Could not connect to database ({e}). Falling back to SQLite.")
         engine = build_engine(fallback_sqlite)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -57,7 +62,7 @@ def init_db():
     except Exception as e:
         logger.error(f"Error initializing DB tables: {e}")
 
-# Auto-initialize tables
+# Auto-initialize tables on module load
 init_db()
 
 def get_db():
