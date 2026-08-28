@@ -67,6 +67,75 @@ async def lifespan(app: FastAPI):
             )
             db.add_all([c1, c2])
             db.commit()
+
+        # If Submissions are empty, auto-ingest sample threat dataset
+        if db.query(Submission).count() == 0:
+            sample_dir = os.path.join(BASE_DIR, "datasets", "sample_emails")
+            if os.path.exists(sample_dir):
+                import uuid
+                from backend.app.schemas.schemas import EmailSubmission, RawBody, SourceContext
+                from backend.analysis.parser.email_parser import email_parser
+                from backend.app.services.pipeline_orchestrator import pipeline_orchestrator
+                from backend.app.models.models import Case, CaseSubmission
+
+                seeded_sids = []
+                for fname in ["phishing.eml", "bec.eml", "impersonation.eml", "credential_phishing.eml", "legitimate.eml"]:
+                    fpath = os.path.join(sample_dir, fname)
+                    if not os.path.exists(fpath):
+                        continue
+                    try:
+                        with open(fpath, "rb") as fp:
+                            fbytes = fp.read()
+                        sid = str(uuid.uuid4())
+                        parsed = email_parser.parse_raw_eml(fbytes, sid, "/tmp/storage" if is_vercel else settings.STORAGE_PATH)
+                        
+                        sub = Submission(
+                            submission_id=sid,
+                            tenant_id="tenant-cyber-sec-01",
+                            file_name=fname,
+                            file_size=len(fbytes),
+                            sha256_hash=hashlib.sha256(fbytes).hexdigest(),
+                            sender=parsed.get("sender"),
+                            recipient=parsed.get("recipient"),
+                            subject=parsed.get("subject"),
+                            source="upload",
+                            status="analyzing",
+                            received_at=datetime.now(timezone.utc),
+                            ingested_at=datetime.now(timezone.utc)
+                        )
+                        db.add(sub)
+                        db.commit()
+
+                        sub_obj = EmailSubmission(
+                            submission_id=sid,
+                            received_at=datetime.now(timezone.utc).isoformat(),
+                            raw_headers=parsed["raw_headers"],
+                            raw_body=RawBody(text_plain=parsed.get("text_plain"), text_html=parsed.get("text_html")),
+                            attachments=parsed.get("attachments", []),
+                            source_context=SourceContext(ingested_via="upload", tenant_id="tenant-cyber-sec-01")
+                        )
+                        pipeline_orchestrator.analyze_submission(sub_obj, db=db, actor="system_init")
+                        seeded_sids.append(sid)
+                    except Exception:
+                        pass
+
+                if seeded_sids and not db.query(Case).first():
+                    try:
+                        c1 = Case(
+                            title="Active Phishing Campaign - Financial Brand Spoofing",
+                            status="investigating",
+                            severity="high",
+                            notes="Multiple deceptive emails targeting accounting personnel with fake credential harvesting links.",
+                            assigned_analyst="analyst@org.gov"
+                        )
+                        db.add(c1)
+                        db.commit()
+                        db.refresh(c1)
+                        for sid in seeded_sids[:3]:
+                            db.add(CaseSubmission(case_id=c1.case_id, submission_id=sid))
+                        db.commit()
+                    except Exception:
+                        pass
     finally:
         db.close()
 
