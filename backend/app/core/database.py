@@ -6,19 +6,22 @@ from backend.app.core.config import settings
 
 logger = logging.getLogger("uvicorn.error")
 
-db_url = settings.DATABASE_URL
+# Select database URL: prioritize SUPABASE_DB_URL if configured
+db_url = settings.SUPABASE_DB_URL if (settings.SUPABASE_DB_URL and not settings.SUPABASE_DB_URL.startswith("sqlite") and "[YOUR-PASSWORD]" not in settings.SUPABASE_DB_URL and "[YOUR_PASSWORD]" not in settings.SUPABASE_DB_URL) else settings.DATABASE_URL
+
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 fallback_sqlite = "sqlite:////tmp/email_threat_intel.db" if is_vercel else "sqlite:///./data/email_threat_intel.db"
 
-# Force /tmp database on Vercel if SQLite is used
+# Force /tmp database on Vercel only if SQLite fallback is explicitly active
 if is_vercel and db_url.startswith("sqlite"):
     db_url = fallback_sqlite
 
 def build_engine(url: str):
     c_args = {}
+    engine_kwargs = {"echo": False}
     if url.startswith("sqlite"):
         c_args = {"check_same_thread": False}
         db_path = url.replace("sqlite:///", "")
@@ -34,13 +37,15 @@ def build_engine(url: str):
         except Exception:
             pass
     elif url.startswith("postgresql"):
-        c_args = {"connect_timeout": 3}
-    return create_engine(url, connect_args=c_args, echo=False)
+        c_args = {"connect_timeout": 10}
+        engine_kwargs["pool_pre_ping"] = True
+        engine_kwargs["pool_recycle"] = 300
+    return create_engine(url, connect_args=c_args, **engine_kwargs)
 
 # Try Supabase PostgreSQL connection; fallback if password placeholder or connection issue
 engine = None
 if "[YOUR-PASSWORD]" in db_url or "YOUR_ACTUAL_PASSWORD_HERE" in db_url or "[YOUR_PASSWORD]" in db_url:
-    logger.info("Supabase placeholder detected in DATABASE_URL. Using SQLite database.")
+    logger.info("Supabase placeholder detected in DATABASE_URL. Using fallback SQLite database until Supabase credentials are configured.")
     engine = build_engine(fallback_sqlite)
 else:
     try:
@@ -49,7 +54,7 @@ else:
             pass
         engine = test_engine
         if not db_url.startswith("sqlite"):
-            logger.info("Successfully connected to PostgreSQL database!")
+            logger.info("🛡️ Successfully connected to Supabase PostgreSQL database!")
     except Exception as e:
         logger.warning(f"Could not connect to database ({e}). Falling back to SQLite.")
         engine = build_engine(fallback_sqlite)
