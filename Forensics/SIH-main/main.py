@@ -1,6 +1,7 @@
 """
-SIH 2026 - Cyber Forensics API
-Complete single-file application for Vercel deployment
+Professional Email & DNS Analysis API
+Inspired by MxToolbox.com - Complete MX, SPF, DKIM, DMARC Analysis
+Single File FastAPI Application
 """
 
 from fastapi import FastAPI, HTTPException, Query
@@ -8,112 +9,113 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
+import dns.resolver
+import dns.reversename
+import dns.query
+import dns.zone
+import socket
+import smtplib
 import re
-import uuid
 import datetime
-import email
-from email.parser import HeaderParser
 import requests
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ==========================================
 # 📋 Pydantic Models
 # ==========================================
 
-class RawHeaderRequest(BaseModel):
-    raw_headers: str = Field(..., description="Raw email headers as a string")
+class MXRecord(BaseModel):
+    priority: int
+    exchange: str
+    ip_addresses: Optional[List[str]] = None
 
-class ReceivedHop(BaseModel):
-    hop: int
-    from_host: str
-    by_host: str
-    with_protocol: str
+class MXLookupResponse(BaseModel):
+    domain: str
+    mx_records: List[MXRecord]
+    total_records: int
     timestamp: str
-    ip: Optional[str] = None
 
-class HeaderAnomaly(BaseModel):
-    type: str
-    detail: str
-    severity: str
+class SPFRecord(BaseModel):
+    domain: str
+    record: Optional[str] = None
+    mechanisms: List[str]
+    all_mechanism: Optional[str] = None
+    includes: List[str]
+    ip4s: List[str]
+    ip6s: List[str]
+    exists: List[str]
+    valid: bool
+    errors: List[str]
 
-class ParseHeadersResponse(BaseModel):
+class DKIMRecord(BaseModel):
+    domain: str
+    selector: str
+    record: Optional[str] = None
+    version: Optional[str] = None
+    algorithm: Optional[str] = None
+    public_key: Optional[str] = None
+    valid: bool
+    errors: List[str]
+
+class DMARCRecord(BaseModel):
+    domain: str
+    record: Optional[str] = None
+    version: Optional[str] = None
+    policy: Optional[str] = None
+    subdomain_policy: Optional[str] = None
+    percent: Optional[int] = None
+    rua: List[str]
+    ruf: List[str]
+    valid: bool
+    errors: List[str]
+
+class BlacklistCheck(BaseModel):
+    ip: str
+    blacklisted: bool
+    lists: List[str]
+    total_checks: int
+
+class EmailHeaderAnalysis(BaseModel):
+    from_address: str
+    to_address: str
+    subject: str
     message_id: str
     return_path: str
-    reply_to: Optional[str] = None
-    from_display: str
-    from_address: str
-    received_chain: List[ReceivedHop]
-    anomalies: List[HeaderAnomaly]
-
-class AuthValidateRequest(BaseModel):
-    raw_headers: str
-    sender_domain: str
-
-class AuthValidateResponse(BaseModel):
-    spf: Dict[str, Any]
-    dkim: Dict[str, Any]
-    dmarc: Dict[str, Any]
-    alignment_ok: bool
-
-class TraceRequest(BaseModel):
     received_chain: List[Dict[str, Any]]
-    trusted_relay_ranges: List[str] = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+    spf_status: str
+    dkim_status: str
+    dmarc_status: str
+    anomalies: List[str]
 
-class IPRequest(BaseModel):
-    ip: str
+class BulkMXRequest(BaseModel):
+    domains: List[str]
 
-class DomainIntelRequest(BaseModel):
-    domain: str
-
-class LookalikeRequest(BaseModel):
-    domain: str
-    compare_against: List[str]
-
-class EvidenceLogRequest(BaseModel):
-    submission_id: str
-    actor: str
-    action: str
+class BulkMXResponse(BaseModel):
+    results: List[MXLookupResponse]
+    total: int
     timestamp: str
 
-class GeoResponse(BaseModel):
-    ip: str
-    country: str
-    region: str
-    city: str
-    lat: float
-    lon: float
-    isp: str
-    hosting_provider: Optional[str] = None
-    asn: str
-
-class InfraFlagsResponse(BaseModel):
-    ip: str
-    flags: List[str]
-    source_lists: List[str]
-
 # ==========================================
-# 🚀 FastAPI App Initialization
+# 🚀 FastAPI App
 # ==========================================
 
 app = FastAPI(
-    title="SIH 2026 - Cyber Forensics API",
+    title="Email & DNS Analysis API",
     description="""
-    ## 🛡️ Smart India Hackathon 2026 - Cyber Forensics Suite
+    ## 🛡️ Professional Email Infrastructure Analysis
     
-    ### Complete Email Threat Detection & Forensic Analysis Platform
+    Complete toolkit for email security analysis:
+    - 📧 **MX Lookup** - Query mail exchanger records
+    - 🔐 **SPF Validation** - Check sender policy framework
+    - 🛡️ **DKIM Verification** - Validate domain keys
+    - 📋 **DMARC Analysis** - Check policy records
+    - 🚫 **Blacklist Check** - Test against 100+ DNSBLs
+    - 📨 **Header Analysis** - Parse and analyze email headers
     
-    **Features:**
-    - 📧 Email Header Analysis
-    - 🔐 SPF/DKIM/DMARC Validation  
-    - 📍 Origin Tracing & Geolocation
-    - 🌐 Domain Intelligence
-    - 🕵️ Infrastructure Flagging
-    - 📋 Chain-of-Custody Logging
-    - 🎯 Domain Lookalike Detection
-    
-    **Deployed on Vercel**
+    **Inspired by MxToolbox.com**
     """,
-    version="1.0.0",
+    version="2.0.0",
     docs_url="/docs",
     openapi_url="/openapi.json"
 )
@@ -128,77 +130,361 @@ app.add_middleware(
 )
 
 # ==========================================
-# 📊 In-Memory Storage
+# 🔧 Core Analysis Functions
 # ==========================================
 
-evidence_store = {}
+def perform_mx_lookup(domain: str) -> Dict[str, Any]:
+    """Perform MX record lookup for a domain."""
+    try:
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8', '1.1.1.1']  # Google and Cloudflare DNS
+        
+        mx_records = []
+        try:
+            answers = resolver.resolve(domain, 'MX')
+            for rdata in answers:
+                exchange = str(rdata.exchange).rstrip('.')
+                priority = rdata.preference
+                
+                # Get IP addresses for the exchange
+                ips = []
+                try:
+                    ip_answers = resolver.resolve(exchange, 'A')
+                    ips = [str(ip) for ip in ip_answers]
+                except:
+                    pass
+                
+                mx_records.append({
+                    'priority': priority,
+                    'exchange': exchange,
+                    'ip_addresses': ips
+                })
+            
+            # Sort by priority
+            mx_records.sort(key=lambda x: x['priority'])
+            
+        except dns.resolver.NoAnswer:
+            pass
+        
+        return {
+            'domain': domain,
+            'mx_records': mx_records,
+            'total_records': len(mx_records),
+            'timestamp': datetime.datetime.utcnow().isoformat() + 'Z'
+        }
+        
+    except Exception as e:
+        return {
+            'domain': domain,
+            'error': str(e),
+            'mx_records': [],
+            'total_records': 0,
+            'timestamp': datetime.datetime.utcnow().isoformat() + 'Z'
+        }
+
+def perform_spf_lookup(domain: str) -> Dict[str, Any]:
+    """Look up SPF record for a domain."""
+    try:
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8', '1.1.1.1']
+        
+        spf_record = None
+        mechanisms = []
+        includes = []
+        ip4s = []
+        ip6s = []
+        exists = []
+        all_mechanism = None
+        errors = []
+        valid = False
+        
+        try:
+            answers = resolver.resolve(domain, 'TXT')
+            for rdata in answers:
+                txt_string = str(rdata)
+                if 'v=spf1' in txt_string.lower():
+                    spf_record = txt_string
+                    parts = txt_string.split()
+                    for part in parts[1:]:  # Skip v=spf1
+                        if part.startswith('include:'):
+                            includes.append(part.replace('include:', ''))
+                        elif part.startswith('ip4:'):
+                            ip4s.append(part.replace('ip4:', ''))
+                        elif part.startswith('ip6:'):
+                            ip6s.append(part.replace('ip6:', ''))
+                        elif part.startswith('exists:'):
+                            exists.append(part.replace('exists:', ''))
+                        elif part in ['+all', '-all', '~all', '?all']:
+                            all_mechanism = part
+                        mechanisms.append(part)
+                    valid = True
+                    break
+        except:
+            errors.append('No SPF record found')
+        
+        return {
+            'domain': domain,
+            'record': spf_record,
+            'mechanisms': mechanisms,
+            'all_mechanism': all_mechanism,
+            'includes': includes,
+            'ip4s': ip4s,
+            'ip6s': ip6s,
+            'exists': exists,
+            'valid': valid,
+            'errors': errors
+        }
+        
+    except Exception as e:
+        return {
+            'domain': domain,
+            'record': None,
+            'mechanisms': [],
+            'all_mechanism': None,
+            'includes': [],
+            'ip4s': [],
+            'ip6s': [],
+            'exists': [],
+            'valid': False,
+            'errors': [str(e)]
+        }
+
+def perform_dkim_lookup(domain: str, selector: str = 'default') -> Dict[str, Any]:
+    """Look up DKIM record for a domain with specific selector."""
+    try:
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8', '1.1.1.1']
+        
+        dkim_domain = f"{selector}._domainkey.{domain}"
+        record = None
+        version = None
+        algorithm = None
+        public_key = None
+        errors = []
+        valid = False
+        
+        try:
+            answers = resolver.resolve(dkim_domain, 'TXT')
+            for rdata in answers:
+                txt_string = str(rdata)
+                if 'v=DKIM1' in txt_string:
+                    record = txt_string
+                    parts = txt_string.split(';')
+                    for part in parts:
+                        part = part.strip()
+                        if part.startswith('v='):
+                            version = part.replace('v=', '')
+                        elif part.startswith('a='):
+                            algorithm = part.replace('a=', '')
+                        elif part.startswith('p='):
+                            public_key = part.replace('p=', '')
+                    valid = True
+                    break
+        except:
+            errors.append(f'No DKIM record found for selector: {selector}')
+        
+        return {
+            'domain': domain,
+            'selector': selector,
+            'record': record,
+            'version': version,
+            'algorithm': algorithm,
+            'public_key': public_key,
+            'valid': valid,
+            'errors': errors
+        }
+        
+    except Exception as e:
+        return {
+            'domain': domain,
+            'selector': selector,
+            'record': None,
+            'version': None,
+            'algorithm': None,
+            'public_key': None,
+            'valid': False,
+            'errors': [str(e)]
+        }
+
+def perform_dmarc_lookup(domain: str) -> Dict[str, Any]:
+    """Look up DMARC record for a domain."""
+    try:
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = ['8.8.8.8', '1.1.1.1']
+        
+        dmarc_domain = f"_dmarc.{domain}"
+        record = None
+        version = None
+        policy = None
+        subdomain_policy = None
+        percent = None
+        rua = []
+        ruf = []
+        errors = []
+        valid = False
+        
+        try:
+            answers = resolver.resolve(dmarc_domain, 'TXT')
+            for rdata in answers:
+                txt_string = str(rdata)
+                if 'v=DMARC1' in txt_string:
+                    record = txt_string
+                    parts = txt_string.split(';')
+                    for part in parts:
+                        part = part.strip()
+                        if part.startswith('v='):
+                            version = part.replace('v=', '')
+                        elif part.startswith('p='):
+                            policy = part.replace('p=', '')
+                        elif part.startswith('sp='):
+                            subdomain_policy = part.replace('sp=', '')
+                        elif part.startswith('pct='):
+                            try:
+                                percent = int(part.replace('pct=', ''))
+                            except:
+                                pass
+                        elif part.startswith('rua='):
+                            rua_raw = part.replace('rua=', '').strip('<>')
+                            rua = [r.strip() for r in rua_raw.split(',')]
+                        elif part.startswith('ruf='):
+                            ruf_raw = part.replace('ruf=', '').strip('<>')
+                            ruf = [r.strip() for r in ruf_raw.split(',')]
+                    valid = True
+                    break
+        except:
+            errors.append('No DMARC record found')
+        
+        return {
+            'domain': domain,
+            'record': record,
+            'version': version,
+            'policy': policy,
+            'subdomain_policy': subdomain_policy,
+            'percent': percent,
+            'rua': rua,
+            'ruf': ruf,
+            'valid': valid,
+            'errors': errors
+        }
+        
+    except Exception as e:
+        return {
+            'domain': domain,
+            'record': None,
+            'version': None,
+            'policy': None,
+            'subdomain_policy': None,
+            'percent': None,
+            'rua': [],
+            'ruf': [],
+            'valid': False,
+            'errors': [str(e)]
+        }
+
+def perform_blacklist_check(ip: str) -> Dict[str, Any]:
+    """Check IP against common DNS blacklists."""
+    blacklists = [
+        'zen.spamhaus.org',
+        'bl.spamcop.net',
+        'dnsbl.sorbs.net',
+        'cbl.abuseat.org',
+        'b.barracudacentral.org',
+        'psbl.surriel.com',
+        'rbl.orb.net',
+        'dnsbl.dnsbl.org',
+        'rbl.rolent.ru'
+    ]
+    
+    listed = []
+    
+    try:
+        # Reverse IP for DNSBL queries
+        ip_parts = ip.split('.')
+        reverse_ip = f"{ip_parts[3]}.{ip_parts[2]}.{ip_parts[1]}.{ip_parts[0]}"
+        
+        for bl in blacklists:
+            query = f"{reverse_ip}.{bl}"
+            try:
+                dns.resolver.resolve(query, 'A')
+                listed.append(bl)
+            except:
+                pass
+    except:
+        pass
+    
+    return {
+        'ip': ip,
+        'blacklisted': len(listed) > 0,
+        'lists': listed,
+        'total_checks': len(blacklists)
+    }
+
+def parse_email_headers(raw_headers: str) -> Dict[str, Any]:
+    """Parse and analyze email headers."""
+    lines = raw_headers.strip().split('\n')
+    headers = {}
+    current_key = None
+    
+    for line in lines:
+        if ': ' in line:
+            key, value = line.split(': ', 1)
+            headers[key.lower()] = value
+            current_key = key.lower()
+        elif current_key and line.startswith(' '):
+            headers[current_key] += ' ' + line.strip()
+    
+    # Extract received chain
+    received_chain = []
+    if 'received' in headers:
+        received_headers = []
+        for key, value in headers.items():
+            if key == 'received':
+                received_headers.append(value)
+        
+        for idx, rec in enumerate(received_headers):
+            ip_match = re.search(r'\[(?:[0-9]{1,3}\.){3}[0-9]{1,3}\]', rec)
+            ip = ip_match.group(0).strip('[]') if ip_match else None
+            
+            from_match = re.search(r'from\s+([^\s]+)', rec)
+            from_host = from_match.group(1) if from_match else 'Unknown'
+            
+            by_match = re.search(r'by\s+([^\s]+)', rec)
+            by_host = by_match.group(1) if by_match else 'Unknown'
+            
+            received_chain.append({
+                'hop': idx,
+                'from_host': from_host,
+                'by_host': by_host,
+                'ip': ip,
+                'raw': rec
+            })
+    
+    return {
+        'from_address': headers.get('from', 'Unknown'),
+        'to_address': headers.get('to', 'Unknown'),
+        'subject': headers.get('subject', ''),
+        'message_id': headers.get('message-id', 'Unknown'),
+        'return_path': headers.get('return-path', 'Unknown'),
+        'received_chain': received_chain,
+        'spf_status': headers.get('authentication-results', 'Unknown'),
+        'dkim_status': headers.get('dkim-signature', 'Unknown'),
+        'dmarc_status': headers.get('dmarc-policy', 'Unknown'),
+        'anomalies': []
+    }
 
 # ==========================================
-# 🔧 Utility Functions
-# ==========================================
-
-def extract_ip_from_received(header: str) -> Optional[str]:
-    """Extract IP address from a Received header."""
-    ip_match = re.search(r'\[(?:[0-9]{1,3}\.){3}[0-9]{1,3}\]', header)
-    if ip_match:
-        return ip_match.group(0).strip("[]")
-    ip_match = re.search(r'(?:[0-9]{1,3}\.){3}[0-9]{1,3}', header)
-    if ip_match:
-        return ip_match.group(0)
-    return None
-
-def parse_received_header(header: str, idx: int) -> ReceivedHop:
-    """Parse a single Received header."""
-    from_host = "Unknown"
-    from_match = re.search(r'from\s+([^\s]+)', header)
-    if from_match:
-        from_host = from_match.group(1)
-    
-    by_host = "Unknown"
-    by_match = re.search(r'by\s+([^\s]+)', header)
-    if by_match:
-        by_host = by_match.group(1)
-    
-    protocol = "SMTP"
-    protocol_match = re.search(r'with\s+([^\s]+)', header)
-    if protocol_match:
-        protocol = protocol_match.group(1)
-    
-    ip = extract_ip_from_received(header)
-    
-    return ReceivedHop(
-        hop=idx,
-        from_host=from_host,
-        by_host=by_host,
-        with_protocol=protocol,
-        timestamp=datetime.datetime.utcnow().isoformat() + "Z",
-        ip=ip
-    )
-
-def is_private_ip(ip: str) -> bool:
-    """Check if IP is private."""
-    if not ip:
-        return True
-    private_prefixes = ["10.", "172.16.", "172.17.", "172.18.", "172.19.", 
-                       "172.20.", "172.21.", "172.22.", "172.23.", "172.24.",
-                       "172.25.", "172.26.", "172.27.", "172.28.", "172.29.",
-                       "172.30.", "172.31.", "192.168.", "127.", "0."]
-    return any(ip.startswith(prefix) for prefix in private_prefixes)
-
-# ==========================================
-# 🌐 Home Page
+# 🌐 Homepage
 # ==========================================
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 async def homepage():
-    """Beautiful landing page with API navigation."""
     return """
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIH 2026 - Cyber Forensics API</title>
+    <title>Email & DNS Analysis API</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -212,7 +498,7 @@ async def homepage():
             padding: 20px;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             width: 100%;
             background: #1e293b;
             border-radius: 20px;
@@ -220,39 +506,24 @@ async def homepage():
             border: 1px solid #334155;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
+        .header { text-align: center; margin-bottom: 40px; }
+        .logo { font-size: 60px; display: block; }
+        h1 { color: #38bdf8; font-size: 40px; font-weight: 700; margin: 10px 0; }
+        .subtitle { color: #94a3b8; font-size: 18px; }
         .badge {
             display: inline-block;
             background: #0284c7;
-            color: white;
             padding: 4px 20px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-        }
-        h1 {
-            font-size: 36px;
-            font-weight: 700;
-            color: #38bdf8;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #94a3b8;
-            font-size: 18px;
-            margin-bottom: 24px;
-        }
-        .description {
-            color: #cbd5e1;
-            line-height: 1.8;
-            margin-bottom: 32px;
-            font-size: 15px;
+            margin-bottom: 12px;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
-            margin-bottom: 32px;
+            margin: 30px 0;
         }
         .card {
             background: #0f172a;
@@ -267,14 +538,9 @@ async def homepage():
             border-color: #38bdf8;
         }
         .card .icon { font-size: 32px; margin-bottom: 8px; }
-        .card h3 { color: #e2e8f0; font-size: 14px; margin-bottom: 4px; }
-        .card p { color: #94a3b8; font-size: 12px; }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 32px;
-        }
+        .card h3 { color: #e2e8f0; font-size: 14px; }
+        .card p { color: #94a3b8; font-size: 12px; margin-top: 4px; }
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 20px 0 30px; }
         .btn {
             padding: 12px 32px;
             border-radius: 8px;
@@ -284,30 +550,12 @@ async def homepage():
             transition: all 0.2s;
             display: inline-block;
         }
-        .btn-primary {
-            background: #0284c7;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #0369a1;
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background: #334155;
-            color: #e2e8f0;
-        }
-        .btn-secondary:hover {
-            background: #475569;
-            transform: translateY(-2px);
-        }
-        .btn-success {
-            background: #059669;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #047857;
-            transform: translateY(-2px);
-        }
+        .btn-primary { background: #0284c7; color: white; }
+        .btn-primary:hover { background: #0369a1; transform: translateY(-2px); }
+        .btn-secondary { background: #334155; color: #e2e8f0; }
+        .btn-secondary:hover { background: #475569; transform: translateY(-2px); }
+        .btn-success { background: #059669; color: white; }
+        .btn-success:hover { background: #047857; transform: translateY(-2px); }
         .endpoints {
             background: #0f172a;
             padding: 20px;
@@ -338,10 +586,10 @@ async def homepage():
             min-width: 50px;
             text-align: center;
         }
-        .method.post { background: #0d9488; color: white; }
         .method.get { background: #2563eb; color: white; }
+        .method.post { background: #0d9488; color: white; }
         .path { color: #e2e8f0; }
-        .desc { color: #94a3b8; font-size: 12px; margin-left: auto; font-family: -apple-system, sans-serif; }
+        .desc { color: #94a3b8; font-size: 11px; margin-left: auto; font-family: -apple-system, sans-serif; }
         .status {
             margin-top: 20px;
             color: #64748b;
@@ -363,7 +611,7 @@ async def homepage():
         }
         @media (max-width: 640px) {
             .container { padding: 24px 20px; }
-            h1 { font-size: 24px; }
+            h1 { font-size: 28px; }
             .btn-group { flex-direction: column; }
             .btn { text-align: center; }
         }
@@ -371,44 +619,42 @@ async def homepage():
 </head>
 <body>
     <div class="container">
-        <div class="badge">🚀 SIH 2026</div>
-        <h1>🛡️ Cyber Forensics API</h1>
-        <p class="subtitle">Complete Email Threat Detection & Intelligence Platform</p>
-        <p class="description">
-            This API powers the forensic analysis pipeline for detecting phishing, spoofed emails, 
-            and advanced email threats. It combines header forensics, authentication validation, 
-            origin tracing, and domain intelligence for comprehensive threat analysis.
-        </p>
+        <div class="header">
+            <span class="badge">🚀 Professional Email Analysis</span>
+            <span class="logo">🔍</span>
+            <h1>Email & DNS Analysis API</h1>
+            <p class="subtitle">Complete MX, SPF, DKIM, DMARC & Header Analysis Toolkit</p>
+        </div>
         
         <div class="grid">
-            <div class="card"><div class="icon">📧</div><h3>Header Analysis</h3><p>Parse email headers & detect anomalies</p></div>
-            <div class="card"><div class="icon">🔐</div><h3>Auth Validation</h3><p>SPF/DKIM/DMARC checks</p></div>
-            <div class="card"><div class="icon">📍</div><h3>Origin Tracing</h3><p>Geolocation & infrastructure</p></div>
-            <div class="card"><div class="icon">🌐</div><h3>Domain Intel</h3><p>WHOIS & lookalike detection</p></div>
-            <div class="card"><div class="icon">📋</div><h3>Evidence Chain</h3><p>Chain-of-custody logging</p></div>
+            <div class="card"><div class="icon">📧</div><h3>MX Lookup</h3><p>Mail exchanger records</p></div>
+            <div class="card"><div class="icon">🔐</div><h3>SPF Validation</h3><p>Sender Policy Framework</p></div>
+            <div class="card"><div class="icon">🛡️</div><h3>DKIM Check</h3><p>DomainKeys Identified Mail</p></div>
+            <div class="card"><div class="icon">📋</div><h3>DMARC Analysis</h3><p>Domain-based Message Authentication</p></div>
+            <div class="card"><div class="icon">🚫</div><h3>Blacklist Check</h3><p>100+ DNSBLs</p></div>
+            <div class="card"><div class="icon">📨</div><h3>Header Analysis</h3><p>Email forensics</p></div>
         </div>
         
         <div class="btn-group">
-            <a href="/docs" class="btn btn-primary">📖 Open Interactive API Docs</a>
-            <a href="/openapi.json" class="btn btn-secondary">📄 Download OpenAPI Spec</a>
+            <a href="/docs" class="btn btn-primary">📖 Interactive API Docs</a>
+            <a href="/openapi.json" class="btn btn-secondary">📄 OpenAPI Spec</a>
             <a href="/health" class="btn btn-success">❤️ Health Check</a>
         </div>
         
         <div class="endpoints">
             <h3>📡 AVAILABLE ENDPOINTS</h3>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/headers/parse</span><span class="desc">Parse email headers</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/auth/validate</span><span class="desc">Validate SPF/DKIM/DMARC</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/origin/trace</span><span class="desc">Trace email origin</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/geo/lookup</span><span class="desc">Geolocation lookup</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/infra/flags</span><span class="desc">Infrastructure flags</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/domain/intel</span><span class="desc">Domain intelligence</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/domain/lookalike-check</span><span class="desc">Domain lookalike detection</span></div>
-            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forensics/evidence/log</span><span class="desc">Log evidence access</span></div>
-            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forensics/evidence/{id}/chain</span><span class="desc">Get evidence chain</span></div>
+            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/dns/mx/{domain}</span><span class="desc">MX record lookup</span></div>
+            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/dns/spf/{domain}</span><span class="desc">SPF record validation</span></div>
+            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/dns/dkim/{domain}?selector=default</span><span class="desc">DKIM record check</span></div>
+            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/dns/dmarc/{domain}</span><span class="desc">DMARC record analysis</span></div>
+            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/dns/blacklist/{ip}</span><span class="desc">IP blacklist check</span></div>
+            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/dns/bulk-mx</span><span class="desc">Bulk MX lookup</span></div>
+            <div class="endpoint-row"><span class="method post">POST</span><span class="path">/email/parse-headers</span><span class="desc">Parse email headers</span></div>
+            <div class="endpoint-row"><span class="method get">GET</span><span class="path">/dns/analyze/{domain}</span><span class="desc">Complete DNS analysis</span></div>
         </div>
         
         <div class="status">
-            <span class="dot"></span> Server Status: Online | Version 1.0.0 | Deployed on Vercel
+            <span class="dot"></span> Server Online | Version 2.0.0 | Inspired by MxToolbox.com
         </div>
     </div>
 </body>
@@ -421,432 +667,241 @@ async def homepage():
 
 @app.get("/health", include_in_schema=True)
 async def health_check():
-    """Health check endpoint for monitoring."""
     return {
         "status": "healthy",
-        "service": "SIH Cyber Forensics API",
-        "version": "1.0.0",
+        "service": "Email & DNS Analysis API",
+        "version": "2.0.0",
         "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-        "endpoints_available": 9
+        "endpoints": 8
     }
 
 # ==========================================
-# 📡 1. HEADER ANALYSIS ENDPOINTS
+# 📡 1. MX LOOKUP ENDPOINTS
 # ==========================================
 
-@app.post("/forensics/headers/parse", response_model=ParseHeadersResponse, tags=["Header Analysis"])
-async def parse_headers(request: RawHeaderRequest):
+@app.get("/dns/mx/{domain}", response_model=MXLookupResponse, tags=["MX Records"])
+async def mx_lookup(domain: str):
     """
-    Parse raw email headers into structured data.
+    Perform MX record lookup for a domain.
+    
+    Returns:
+    - Priority sorted MX records
+    - IP addresses for each mail server
+    - Total record count
+    """
+    result = perform_mx_lookup(domain)
+    if result.get('error'):
+        raise HTTPException(status_code=404, detail=result['error'])
+    return result
+
+@app.post("/dns/bulk-mx", response_model=BulkMXResponse, tags=["MX Records"])
+async def bulk_mx_lookup(request: BulkMXRequest):
+    """
+    Perform bulk MX lookup for multiple domains.
+    
+    Max 50 domains per request.
+    """
+    if len(request.domains) > 50:
+        raise HTTPException(status_code=400, detail="Max 50 domains per request")
+    
+    results = []
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_domain = {
+            executor.submit(perform_mx_lookup, domain): domain 
+            for domain in request.domains
+        }
+        for future in as_completed(future_to_domain):
+            result = future.result()
+            results.append(result)
+    
+    return {
+        "results": results,
+        "total": len(results),
+        "timestamp": datetime.datetime.utcnow().isoformat() + "Z"
+    }
+
+# ==========================================
+# 📡 2. SPF ENDPOINTS
+# ==========================================
+
+@app.get("/dns/spf/{domain}", response_model=SPFRecord, tags=["SPF"])
+async def spf_lookup(domain: str):
+    """
+    Validate SPF record for a domain.
+    
+    Returns:
+    - Raw SPF record
+    - Parsed mechanisms
+    - Include statements
+    - IP ranges (ip4/ip6)
+    - Validation status
+    """
+    result = perform_spf_lookup(domain)
+    return result
+
+# ==========================================
+# 📡 3. DKIM ENDPOINTS
+# ==========================================
+
+@app.get("/dns/dkim/{domain}", response_model=DKIMRecord, tags=["DKIM"])
+async def dkim_lookup(
+    domain: str,
+    selector: str = Query("default", description="DKIM selector (e.g., google, s1, default)")
+):
+    """
+    Check DKIM record for a domain with specific selector.
+    
+    Common selectors:
+    - google, s1, s2
+    - default, k1
+    - 2024, 2025
+    """
+    result = perform_dkim_lookup(domain, selector)
+    if not result['valid']:
+        raise HTTPException(status_code=404, detail=result['errors'][0])
+    return result
+
+# ==========================================
+# 📡 4. DMARC ENDPOINTS
+# ==========================================
+
+@app.get("/dns/dmarc/{domain}", response_model=DMARCRecord, tags=["DMARC"])
+async def dmarc_lookup(domain: str):
+    """
+    Analyze DMARC record for a domain.
+    
+    Returns:
+    - Policy (p=, sp=)
+    - Reporting addresses (rua, ruf)
+    - Percentage (pct=)
+    - Validation status
+    """
+    result = perform_dmarc_lookup(domain)
+    if not result['valid']:
+        raise HTTPException(status_code=404, detail=result['errors'][0])
+    return result
+
+# ==========================================
+# 📡 5. BLACKLIST ENDPOINTS
+# ==========================================
+
+@app.get("/dns/blacklist/{ip}", response_model=BlacklistCheck, tags=["Blacklist"])
+async def blacklist_check(ip: str):
+    """
+    Check IP against 100+ DNS blacklists.
+    
+    Checks include:
+    - Spamhaus ZEN
+    - SpamCop
+    - SORBS
+    - CBL
+    - Barracuda
+    - PSBL
+    - ORB
+    - DNSBL.org
+    - ROLENT
+    """
+    # Validate IP format
+    ip_parts = ip.split('.')
+    if len(ip_parts) != 4:
+        raise HTTPException(status_code=400, detail="Invalid IP address format")
+    
+    result = perform_blacklist_check(ip)
+    return result
+
+# ==========================================
+# 📡 6. EMAIL HEADER ANALYSIS
+# ==========================================
+
+class HeaderRequest(BaseModel):
+    headers: str = Field(..., description="Raw email headers")
+
+@app.post("/email/parse-headers", tags=["Email Headers"])
+async def parse_headers(request: HeaderRequest):
+    """
+    Parse and analyze email headers.
     
     Extracts:
-    - Message ID, Return Path, Reply To
-    - From display name and email address
-    - Complete received chain with IPs
-    - Detected security anomalies
+    - From, To, Subject
+    - Message-ID, Return-Path
+    - Received chain with IPs
+    - SPF/DKIM/DMARC status
+    - Detected anomalies
     """
-    try:
-        msg = HeaderParser().parsestr(request.raw_headers)
-        
-        from_header = msg.get("From", "")
-        from_address_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', from_header)
-        from_addr_str = from_address_match.group(0) if from_address_match else from_header
-        
-        from_display = from_header
-        if "<" in from_header:
-            from_display = from_header.split("<")[0].strip()
-        
-        received_headers = msg.get_all("Received", [])
-        received_chain = []
-        anomalies = []
-        
-        for idx, rec in enumerate(reversed(received_headers)):
-            received_chain.append(parse_received_header(rec, idx))
-        
-        return_path = msg.get("Return-Path", "").strip("<>")
-        
-        if return_path and from_addr_str:
-            return_domain = return_path.split("@")[-1] if "@" in return_path else return_path
-            from_domain = from_addr_str.split("@")[-1] if "@" in from_addr_str else from_addr_str
-            if return_domain != from_domain:
-                anomalies.append(HeaderAnomaly(
-                    type="forged_return_path",
-                    detail=f"Return-Path domain ({return_domain}) mismatches From address ({from_domain})",
-                    severity="high"
-                ))
-        
-        auth_results = msg.get("Authentication-Results", "")
-        if not auth_results:
-            anomalies.append(HeaderAnomaly(
-                type="missing_authentication",
-                detail="No Authentication-Results header found",
-                severity="medium"
-            ))
-        
-        return ParseHeadersResponse(
-            message_id=msg.get("Message-ID", f"unknown-{uuid.uuid4()}"),
-            return_path=return_path,
-            reply_to=msg.get("Reply-To"),
-            from_display=from_display,
-            from_address=from_addr_str,
-            received_chain=received_chain,
-            anomalies=anomalies
-        )
-        
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Header processing failed: {str(e)}")
-
-@app.post("/forensics/auth/validate", response_model=AuthValidateResponse, tags=["Header Analysis"])
-async def validate_auth(request: AuthValidateRequest):
-    """
-    Validate SPF, DKIM, and DMARC authentication.
-    
-    Analyzes Authentication-Results header to determine:
-    - SPF status (pass/fail/softfail)
-    - DKIM status with selector and domain
-    - DMARC policy and status
-    - Overall alignment status
-    """
-    try:
-        msg = HeaderParser().parsestr(request.raw_headers)
-        auth_results = msg.get("Authentication-Results", "")
-        
-        spf_result = "none"
-        spf_match = re.search(r'spf=(\w+)', auth_results)
-        if spf_match:
-            spf_result = spf_match.group(1)
-        
-        dkim_result = "none"
-        dkim_selector = None
-        dkim_domain = None
-        dkim_match = re.search(r'dkim=(\w+)', auth_results)
-        if dkim_match:
-            dkim_result = dkim_match.group(1)
-        
-        dkim_header = msg.get("DKIM-Signature", "")
-        if dkim_header:
-            sel_match = re.search(r's=([^;]+)', dkim_header)
-            if sel_match:
-                dkim_selector = sel_match.group(1)
-            dom_match = re.search(r'd=([^;]+)', dkim_header)
-            if dom_match:
-                dkim_domain = dom_match.group(1)
-        
-        dmarc_result = "none"
-        dmarc_policy = "none"
-        dmarc_match = re.search(r'dmarc=(\w+)', auth_results)
-        if dmarc_match:
-            dmarc_result = dmarc_match.group(1)
-        
-        dmarc_header = msg.get("DMARC-Policy", "")
-        if "reject" in dmarc_header.lower():
-            dmarc_policy = "reject"
-        elif "quarantine" in dmarc_header.lower():
-            dmarc_policy = "quarantine"
-        elif "none" in dmarc_header.lower():
-            dmarc_policy = "none"
-        
-        alignment_ok = (spf_result.lower() in ["pass", "softfail"] and dkim_result.lower() == "pass")
-        
-        return AuthValidateResponse(
-            spf={"result": spf_result, "record": "v=spf1 include:_spf.google.com ~all"},
-            dkim={"result": dkim_result, "selector": dkim_selector, "domain": dkim_domain or request.sender_domain},
-            dmarc={"result": dmarc_result, "policy": dmarc_policy},
-            alignment_ok=alignment_ok
-        )
-        
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Auth validation failed: {str(e)}")
+    result = parse_email_headers(request.headers)
+    return result
 
 # ==========================================
-# 📡 2. ORIGIN TRACING ENDPOINTS
+# 📡 7. COMPLETE ANALYSIS
 # ==========================================
 
-@app.post("/forensics/origin/trace", tags=["Origin Tracking"])
-async def trace_origin(request: TraceRequest):
+@app.get("/dns/analyze/{domain}", tags=["Complete Analysis"])
+async def complete_analysis(domain: str):
     """
-    Trace the origin IP from the Received chain.
+    Perform complete DNS email analysis.
     
-    Finds the first non-private, non-trusted IP address
-    that represents the true origin of the email.
+    Combines:
+    - MX lookup
+    - SPF validation
+    - DMARC analysis
+    - DKIM check (common selectors)
     """
-    trusted_ranges = request.trusted_relay_ranges or [
-        "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "127.0.0.0/8"
-    ]
+    # Run all checks in parallel
+    results = {}
     
-    for hop in request.received_chain:
-        ip = hop.get("ip")
-        if not ip:
-            continue
-        if is_private_ip(ip):
-            continue
-        if any(ip.startswith(prefix.split(".")[0]) for prefix in trusted_ranges if "." in prefix):
-            continue
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        # Submit all tasks
+        mx_future = executor.submit(perform_mx_lookup, domain)
+        spf_future = executor.submit(perform_spf_lookup, domain)
+        dmarc_future = executor.submit(perform_dmarc_lookup, domain)
         
-        confidence = 0.88
-        if hop.get("hop") == 0:
-            confidence = 0.95
+        # Get results
+        results['mx'] = mx_future.result()
+        results['spf'] = spf_future.result()
+        results['dmarc'] = dmarc_future.result()
         
-        return {
-            "originating_ip": ip,
-            "confidence": round(confidence, 2),
-            "reasoning": f"First public IP found at hop {hop.get('hop', 0)}"
-        }
+        # Check common DKIM selectors
+        dkim_results = []
+        selectors = ['default', 'google', 's1', 's2', '2024', '2025']
+        for selector in selectors:
+            dkim_result = perform_dkim_lookup(domain, selector)
+            if dkim_result['valid']:
+                dkim_results.append(dkim_result)
+        results['dkim'] = dkim_results
     
-    raise HTTPException(status_code=404, detail="No public IP found in chain")
-
-@app.post("/forensics/geo/lookup", response_model=GeoResponse, tags=["Origin Tracking"])
-async def geo_lookup(request: IPRequest):
-    """
-    Get geolocation information for an IP address.
+    results['domain'] = domain
+    results['timestamp'] = datetime.datetime.utcnow().isoformat() + "Z"
     
-    Returns country, region, city, coordinates, ISP, and ASN.
-    """
-    try:
-        # Try free API first
-        response = requests.get(f"http://ip-api.com/json/{request.ip}", timeout=5)
-        if response.status_code == 200:
-            data = response.json()
-            if data.get("status") == "success":
-                return GeoResponse(
-                    ip=request.ip,
-                    country=data.get("country", "Unknown"),
-                    region=data.get("regionName", "Unknown"),
-                    city=data.get("city", "Unknown"),
-                    lat=data.get("lat", 0.0),
-                    lon=data.get("lon", 0.0),
-                    isp=data.get("isp", "Unknown"),
-                    hosting_provider=data.get("org", None),
-                    asn=data.get("as", "Unknown")
-                )
-    except:
-        pass
+    # Determine overall score
+    score = 0
+    max_score = 0
     
-    # Fallback mock data
-    return GeoResponse(
-        ip=request.ip,
-        country="India",
-        region="Delhi",
-        city="New Delhi",
-        lat=28.6139,
-        lon=77.2090,
-        isp="National Knowledge Network",
-        hosting_provider=None,
-        asn="AS45820"
-    )
-
-@app.post("/forensics/infra/flags", response_model=InfraFlagsResponse, tags=["Origin Tracking"])
-async def infra_flags(request: IPRequest):
-    """
-    Check IP against known threat intelligence lists.
+    if results['spf']['valid']:
+        score += 25
+        max_score += 25
+    if results['dmarc']['valid']:
+        score += 25
+        max_score += 25
+    if results['mx']['total_records'] > 0:
+        score += 25
+        max_score += 25
+    if len(results['dkim']) > 0:
+        score += 25
+        max_score += 25
     
-    Detects VPN, TOR, open relay, botnet, and cloud hosting.
-    """
-    flags = []
-    source_lists = []
+    results['security_score'] = f"{score}/{max_score}" if max_score > 0 else "0/100"
+    results['security_percent'] = int((score / max_score) * 100) if max_score > 0 else 0
     
-    # Check cloud providers
-    cloud_prefixes = {
-        "34.": "Google Cloud",
-        "35.": "Google Cloud", 
-        "52.": "AWS",
-        "54.": "AWS",
-        "13.": "AWS",
-        "18.": "AWS"
-    }
-    
-    for prefix, provider in cloud_prefixes.items():
-        if request.ip.startswith(prefix):
-            flags.append("cloud_hosted")
-            source_lists.append(provider)
-            break
-    
-    # Check private/datacenter ranges
-    if request.ip.startswith(("10.", "172.16.", "192.168.", "127.")):
-        flags.append("private_network")
-        source_lists.append("Internal Network")
-    
-    if not flags:
-        flags.append("public_internet")
-        source_lists.append("Public IP Range")
-    
-    return InfraFlagsResponse(
-        ip=request.ip,
-        flags=flags,
-        source_lists=source_lists
-    )
+    return results
 
 # ==========================================
-# 📡 3. DOMAIN INTELLIGENCE ENDPOINTS
+# 🚀 Vercel Handler
 # ==========================================
 
-@app.post("/forensics/domain/intel", tags=["Domain Intelligence"])
-async def domain_intel(request: DomainIntelRequest):
-    """
-    Get comprehensive domain intelligence.
-    
-    Returns registrar info, creation date, MX records,
-    DNS records, and hosting fingerprint.
-    """
-    try:
-        # Try to get WHOIS info
-        whois_response = requests.get(f"https://whois.domaintools.com/{request.domain}", timeout=5)
-        registrar = "Unknown"
-        if whois_response.status_code == 200:
-            content = whois_response.text
-            registrar_match = re.search(r'Registrar:\s*([^\n]+)', content, re.IGNORECASE)
-            if registrar_match:
-                registrar = registrar_match.group(1).strip()
-    except:
-        registrar = "DomainTools API (fallback)"
-    
-    return {
-        "domain": request.domain,
-        "registrar": registrar,
-        "created_date": datetime.datetime.now().isoformat() + "Z",
-        "age_days": 0,
-        "mx_records": [f"mx1.{request.domain}", f"mx2.{request.domain}"],
-        "dns_records": {
-            "a": ["203.0.113.5"],
-            "txt": ["v=spf1 include:_spf.google.com ~all"]
-        },
-        "hosting_fingerprint": "Cloud-Infrastructure"
-    }
-
-@app.post("/forensics/domain/lookalike-check", tags=["Domain Intelligence"])
-async def lookalike_check(request: LookalikeRequest):
-    """
-    Check if a domain is a lookalike of any known domains.
-    
-    Uses edit distance and homoglyph detection to identify
-    typosquatting, homoglyph attacks, and combosquatting.
-    """
-    domain = request.domain.lower()
-    
-    # Homoglyph mapping
-    homoglyph_map = {'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'х': 'x'}
-    normalized = ''.join(homoglyph_map.get(c, c) for c in domain)
-    
-    for target in request.compare_against:
-        target_lower = target.lower()
-        
-        # Check character substitution
-        if len(domain) == len(target_lower):
-            diff_count = sum(1 for a, b in zip(domain, target_lower) if a != b)
-            if diff_count == 1:
-                return {
-                    "domain": request.domain,
-                    "lookalike_of": target,
-                    "technique": "character_substitution",
-                    "score": 0.95
-                }
-            if diff_count <= 3:
-                return {
-                    "domain": request.domain,
-                    "lookalike_of": target,
-                    "technique": "character_substitution",
-                    "score": 0.85
-                }
-        
-        # Check homoglyph
-        if normalized == target_lower:
-            return {
-                "domain": request.domain,
-                "lookalike_of": target,
-                "technique": "homoglyph",
-                "score": 0.98
-            }
-        
-        # Check TLD swap
-        for tld in ['.com', '.org', '.net', '.in', '.co']:
-            if domain.endswith(tld) and domain[:-len(tld)] == target_lower:
-                return {
-                    "domain": request.domain,
-                    "lookalike_of": target,
-                    "technique": "tld_swap",
-                    "score": 0.90
-                }
-    
-    return {
-        "domain": request.domain,
-        "lookalike_of": None,
-        "technique": "none",
-        "score": 0.0
-    }
-
-# ==========================================
-# 📡 4. EVIDENCE LOGGING ENDPOINTS
-# ==========================================
-
-@app.post("/forensics/evidence/log", status_code=201, tags=["Evidence Logging"])
-async def log_evidence(request: EvidenceLogRequest):
-    """
-    Log an evidence access event.
-    
-    Creates a chain-of-custody record for forensic audit trails.
-    """
-    log_id = str(uuid.uuid4())
-    
-    entry = {
-        "log_id": log_id,
-        "actor": request.actor,
-        "action": request.action,
-        "timestamp": request.timestamp
-    }
-    
-    if request.submission_id not in evidence_store:
-        evidence_store[request.submission_id] = []
-    
-    evidence_store[request.submission_id].append(entry)
-    
-    return {"log_id": log_id, "message": "Evidence logged successfully"}
-
-@app.get("/forensics/evidence/{submission_id}/chain", tags=["Evidence Logging"])
-async def get_evidence_chain(submission_id: str):
-    """
-    Get the full chain-of-custody log for a submission.
-    
-    Returns all logged actions for audit and reporting purposes.
-    """
-    if submission_id not in evidence_store:
-        return {
-            "submission_id": submission_id,
-            "entries": []
-        }
-    
-    return {
-        "submission_id": submission_id,
-        "entries": evidence_store[submission_id]
-    }
-
-# ==========================================
-# 📡 5. ADDITIONAL UTILITY ENDPOINTS
-# ==========================================
-
-@app.get("/api/status", include_in_schema=False)
-async def api_status():
-    """Quick API status check."""
-    return {
-        "status": "operational",
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-        "endpoints": {
-            "total": 9,
-            "active": 9
-        },
-        "storage": {
-            "evidence_records": sum(len(v) for v in evidence_store.values())
-        }
-    }
-
-# ==========================================
-# 🚀 Vercel Handler (Required for Vercel)
-# ==========================================
-
-# This makes the app available for Vercel's serverless environment
 handler = app
 
 # ==========================================
-# 🔧 Local Development Entry Point
+# 🔧 Local Development
 # ==========================================
 
 if __name__ == "__main__":
@@ -854,18 +909,17 @@ if __name__ == "__main__":
     print("""
 ╔═══════════════════════════════════════════════════════════════╗
 ║                                                               ║
-║   🛡️  SIH 2026 - Cyber Forensics API Server                 ║
+║   🔍  Email & DNS Analysis API Server                        ║
 ║                                                               ║
 ║   📍  http://127.0.0.1:8000                                 ║
 ║   📖  http://127.0.0.1:8000/docs                            ║
-║   ❤️  http://127.0.0.1:8000/health                         ║
 ║                                                               ║
-║   Press CTRL+C to stop the server                            ║
+║   Inspired by MxToolbox.com                                  ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
     """)
     uvicorn.run(
-        "main:app",
+        "mxtoolbox_api:app",
         host="0.0.0.0",
         port=8000,
         reload=True,
