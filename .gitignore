@@ -1,27 +1,98 @@
-# macOS system files
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.Trashes
+# ==========================================
+# 🛡️ TraceX — Git Ignore Configuration
+# ==========================================
 
-# Node / npm
+# Environment variables & secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cert
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Node.js & Frontend build
 node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.next/
+frontend/build/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
+.vite/
+frontend/.vite/
 
-# Build outputs
-dist/
-dist-ssr/
-*.local
+# Local databases & uploads (Keep directories clean)
+data/*.db
+data/*.db-journal
+data/*.sqlite
+data/*.sqlite3
+data/uploads/*
+data/storage/*
+!data/.gitkeep
+!data/uploads/.gitkeep
+!data/storage/.gitkeep
 
-# Editor directories and files
+# Logs & temporary files
+*.log
+logs/
+*.tmp
+*.temp
+scratch/
+
+# IDE & Editor caches
 .vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
 .idea/
 *.suo
@@ -29,12 +100,7 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Logs
-logs
-*.log
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
