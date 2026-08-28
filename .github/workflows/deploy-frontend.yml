@@ -3,7 +3,7 @@ name: Deploy Demo Frontend to GitHub Pages
 on:
   push:
     branches:
-      - frontend@BuvaneswaranE
+      - main
   workflow_dispatch:
 
 permissions:
