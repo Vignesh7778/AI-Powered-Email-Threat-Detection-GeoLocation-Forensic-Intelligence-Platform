@@ -1,9 +1,12 @@
 import os
 import sys
+import hashlib
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 
 # Add project root to sys.path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,7 +17,7 @@ from backend.app.core.config import settings
 from backend.app.core.database import init_db, SessionLocal
 from backend.app.api.v1.api import api_router
 from backend.app.api.v1.routes import auth, forensics, ml, internal
-from backend.app.models.models import User, Campaign
+from backend.app.models.models import User, Campaign, Submission
 from backend.app.core.security import get_password_hash
 
 @asynccontextmanager
