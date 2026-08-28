@@ -6,11 +6,27 @@ from backend.app.core.config import settings
 
 logger = logging.getLogger("uvicorn.error")
 
-# Select database URL: prioritize SUPABASE_DB_URL if configured
-db_url = settings.SUPABASE_DB_URL if (settings.SUPABASE_DB_URL and not settings.SUPABASE_DB_URL.startswith("sqlite") and "[YOUR-PASSWORD]" not in settings.SUPABASE_DB_URL and "[YOUR_PASSWORD]" not in settings.SUPABASE_DB_URL) else settings.DATABASE_URL
+import urllib.parse
 
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+def sanitize_db_url(url: str) -> str:
+    if not url:
+        return url
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+    if url.count("@") > 1:
+        scheme, rest = url.split("://", 1)
+        last_at = rest.rfind("@")
+        userinfo = rest[:last_at]
+        hostinfo = rest[last_at + 1:]
+        if ":" in userinfo:
+            user, pwd = userinfo.split(":", 1)
+            encoded_pwd = urllib.parse.quote(pwd)
+            return f"{scheme}://{user}:{encoded_pwd}@{hostinfo}"
+    return url
+
+# Select database URL: prioritize SUPABASE_DB_URL if configured
+raw_db_url = settings.SUPABASE_DB_URL if (settings.SUPABASE_DB_URL and not settings.SUPABASE_DB_URL.startswith("sqlite") and "[YOUR-PASSWORD]" not in settings.SUPABASE_DB_URL and "[YOUR_PASSWORD]" not in settings.SUPABASE_DB_URL) else settings.DATABASE_URL
+db_url = sanitize_db_url(raw_db_url)
 
 is_vercel = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 fallback_sqlite = "sqlite:////tmp/email_threat_intel.db" if is_vercel else "sqlite:///./data/email_threat_intel.db"
