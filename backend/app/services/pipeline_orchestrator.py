@@ -120,7 +120,7 @@ class PipelineOrchestrator:
 
         schema_domain = SchemaDomainIntel(
             sender_domain=sender_domain,
-            domain_age_days=domain_res["domain_age_days"],
+            domain_age_days=domain_res.get("domain_age_days"),
             registrar=domain_res.get("registrar"),
             mx_records=domain_res.get("mx_records", []),
             lookalike_of=lookalike_res.lookalike_of,
@@ -129,12 +129,12 @@ class PipelineOrchestrator:
 
         ml_features = MLFeatures(
             auth_results=schema_auth,
-            domain_age_days=domain_res["domain_age_days"],
+            domain_age_days=domain_res.get("domain_age_days"),
             lookalike_score=lookalike_res.score,
             infra_flags=infra_res.flags,
             header_anomalies_count=len(header_res.anomalies),
-            urgency_score=nlp_res["urgency_score"],
-            impersonation_language_score=nlp_res["impersonation_language_score"],
+            urgency_score=nlp_res.get("urgency_score", 0.0),
+            impersonation_language_score=nlp_res.get("impersonation_language_score", 0.0),
             link_risk_scores=link_risk_scores
         )
 
