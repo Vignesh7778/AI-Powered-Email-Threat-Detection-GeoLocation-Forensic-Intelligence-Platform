@@ -134,60 +134,60 @@ export const MapPage: React.FC<MapPageProps> = ({ onSelectSubmission }) => {
     });
   }, [nodes, searchQuery, filterRisk, filterCountry]);
 
-  return (
-    <div className="p-6 space-y-6 max-w-[1600px] w-full mx-auto bg-[#0A0D10] text-[#E7EBEF]">
+  return (    <div className="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-6 max-w-[1720px] w-full mx-auto bg-[#0A0D10] text-[#E7EBEF]">
       {/* Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#232A32]">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-[#232A32]">
         <div>
-          <h1 className="text-lg font-bold text-[#E7EBEF] tracking-tight font-sans">Observable Infrastructure</h1>
-          <p className="text-xs font-mono text-[#8B96A3] mt-0.5">
+          <h1 className="text-base sm:text-lg font-bold text-[#E7EBEF] tracking-tight font-sans">Observable Infrastructure</h1>
+          <p className="text-[11px] sm:text-xs font-mono text-[#8B96A3] mt-0.5">
             Geolocation and network intelligence derived from verified email routing evidence
           </p>
         </div>
 
-        <div className="flex items-center gap-3 font-mono text-xs">
-          <ThreatBadge type="trust" value="observed" size="sm" />
+        <div className="flex items-center gap-2 sm:gap-3 font-mono text-xs">
+          <ThreatBadge type="trust" value="observed" size="xs" />
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#12161B] border border-[#232A32] text-[#8B96A3] hover:text-[#E8A33D] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#12161B] border border-[#232A32] text-[#8B96A3] hover:text-[#E8A33D] transition-colors min-h-[36px]"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#E8A33D]' : ''}`} />
-            <span>Refresh Infrastructure</span>
+            <span className="hidden xs:inline">Refresh Infrastructure</span>
+            <span className="xs:hidden">Refresh</span>
           </button>
         </div>
       </div>
 
       {/* Summary Metrics Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 font-mono text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 font-mono text-xs">
         <div className="p-3 rounded bg-[#12161B] border border-[#232A32] space-y-1">
           <div className="text-[10px] uppercase text-[#8B96A3]">Observable IPs</div>
-          <div className="text-lg font-bold text-[#2DD4BF]">{metrics.ips}</div>
+          <div className="text-base sm:text-lg font-bold text-[#2DD4BF]">{metrics.ips}</div>
         </div>
         <div className="p-3 rounded bg-[#12161B] border border-[#232A32] space-y-1">
           <div className="text-[10px] uppercase text-[#8B96A3]">Autonomous Systems</div>
-          <div className="text-lg font-bold text-[#E8A33D]">{metrics.asns}</div>
+          <div className="text-base sm:text-lg font-bold text-[#E8A33D]">{metrics.asns}</div>
         </div>
         <div className="p-3 rounded bg-[#12161B] border border-[#232A32] space-y-1">
           <div className="text-[10px] uppercase text-[#8B96A3]">Transit Countries</div>
-          <div className="text-lg font-bold text-[#8B8FE8]">{metrics.countries}</div>
+          <div className="text-base sm:text-lg font-bold text-[#8B8FE8]">{metrics.countries}</div>
         </div>
         <div className="p-3 rounded bg-[#12161B] border border-[#232A32] space-y-1">
           <div className="text-[10px] uppercase text-[#8B96A3]">Correlated Domains</div>
-          <div className="text-lg font-bold text-[#E7EBEF]">{metrics.domains}</div>
+          <div className="text-base sm:text-lg font-bold text-[#E7EBEF]">{metrics.domains}</div>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#12161B] border border-[#232A32] p-3 rounded-lg font-mono text-xs">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 bg-[#12161B] border border-[#232A32] p-3 rounded-lg font-mono text-xs">
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-3.5 h-3.5 text-[#566270] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search IP, hostname, ASN..."
-            className="w-full pl-9 pr-8 py-1.5 bg-[#0A0D10] border border-[#232A32] rounded text-xs text-[#E7EBEF] placeholder-[#566270] focus:outline-none focus:border-[#E8A33D]"
+            className="w-full pl-9 pr-8 py-1.5 bg-[#0A0D10] border border-[#232A32] rounded text-xs text-[#E7EBEF] placeholder-[#566270] focus:outline-hidden focus:border-[#E8A33D] min-h-[36px]"
           />
           {searchQuery && (
             <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8B96A3] hover:text-white">
@@ -196,13 +196,13 @@ export const MapPage: React.FC<MapPageProps> = ({ onSelectSubmission }) => {
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] text-[#8B96A3] uppercase">Country:</span>
             <select
               value={filterCountry}
               onChange={(e) => setFilterCountry(e.target.value)}
-              className="bg-[#0A0D10] border border-[#232A32] text-[#E7EBEF] rounded px-2 py-1 text-xs focus:outline-none"
+              className="bg-[#0A0D10] border border-[#232A32] text-[#E7EBEF] rounded px-2 py-1.5 text-xs focus:outline-hidden min-h-[36px]"
             >
               <option value="all">All Countries</option>
               {countryList.map(c => <option key={c} value={c}>{c}</option>)}
@@ -214,7 +214,7 @@ export const MapPage: React.FC<MapPageProps> = ({ onSelectSubmission }) => {
             <select
               value={filterRisk}
               onChange={(e) => setFilterRisk(e.target.value)}
-              className="bg-[#0A0D10] border border-[#232A32] text-[#E7EBEF] rounded px-2 py-1 text-xs focus:outline-none"
+              className="bg-[#0A0D10] border border-[#232A32] text-[#E7EBEF] rounded px-2 py-1.5 text-xs focus:outline-hidden min-h-[36px]"
             >
               <option value="all">All Risks</option>
               <option value="critical">Critical</option>
@@ -228,29 +228,29 @@ export const MapPage: React.FC<MapPageProps> = ({ onSelectSubmission }) => {
 
       {/* Main Map Workspace */}
       {loading ? (
-        <div className="w-full h-[560px] bg-[#12161B] border border-[#232A32] rounded-lg flex flex-col items-center justify-center space-y-3 font-mono">
+        <div className="w-full h-[420px] sm:h-[560px] bg-[#12161B] border border-[#232A32] rounded-lg flex flex-col items-center justify-center space-y-3 font-mono">
           <RefreshCw className="w-6 h-6 text-[#E8A33D] animate-spin" />
           <div className="text-xs text-[#8B96A3]">Resolving observable infrastructure coordinates...</div>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <TraceXMap
             nodes={filteredNodes}
             selectedNodeId={selectedNodeId}
             onSelectNode={handleSelectNode}
           />
-
-          {/* Infrastructure Details Table */}
+          {/* Infrastructure Details Section */}
           {filteredNodes.length > 0 && (
             <div className="bg-[#12161B] rounded-lg border border-[#232A32] overflow-hidden">
-              <div className="px-5 py-3 border-b border-[#232A32] flex items-center justify-between">
+              <div className="px-4 sm:px-5 py-3 border-b border-[#232A32] flex items-center justify-between">
                 <span className="text-xs font-mono uppercase font-bold text-[#E7EBEF]">
                   Observable Infrastructure Registry ({filteredNodes.length})
                 </span>
-                <span className="text-[10px] font-mono text-[#8B96A3]">Click row to focus map marker and inspect details</span>
+                <span className="text-[10px] font-mono text-[#8B96A3] hidden sm:inline">Click to inspect node</span>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left font-mono text-xs">
                   <thead>
                     <tr className="border-b border-[#232A32] bg-[#0A0D10]/60 text-[#8B96A3] text-[10px] uppercase">
@@ -302,6 +302,32 @@ export const MapPage: React.FC<MapPageProps> = ({ onSelectSubmission }) => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="md:hidden divide-y divide-[#232A32]">
+                {filteredNodes.map((n) => (
+                  <div
+                    key={n.id}
+                    onClick={() => handleSelectNode(n)}
+                    className="p-3.5 hover:bg-[#191F26] cursor-pointer transition-colors font-mono text-xs space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#2DD4BF] font-bold">{n.ip}</span>
+                      <span className="text-[#E8A33D] text-[11px] font-bold">
+                        {n.isEarliestPublic ? '★ Origin Relay' : `Hop 0${n.hop}`}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-[#8B96A3] truncate">{n.hostname || n.isp || 'Transit Network'}</div>
+                    <div className="flex items-center justify-between text-[10px] text-[#566270] pt-1">
+                      <span>{n.city ? `${n.city}, ${n.country}` : n.country || 'Unknown'}</span>
+                      <span className="text-[#E8A33D] font-bold flex items-center gap-1">
+                        <span>Inspect</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

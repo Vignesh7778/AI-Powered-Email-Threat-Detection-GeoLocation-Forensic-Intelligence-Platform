@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Gauge, Inbox, AlertTriangle, FolderKanban,
-  MapPin, Share2, FileDown, Settings, RadioTower
+  MapPin, Share2, FileDown, Settings, RadioTower, X
 } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   onChangeTab: (tab: string) => void;
   alertCount: number;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onChangeTab, alertCount }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  activeTab,
+  onChangeTab,
+  alertCount,
+  isOpen = false,
+  onClose
+}) => {
   const sections = [
     {
       group: 'OVERVIEW',
@@ -47,21 +55,50 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onChangeTab, alertC
     }
   ];
 
-  return (
-    <aside className="w-60 bg-[#0A0D10] border-r border-[#232A32] flex flex-col justify-between p-3.5 z-30 select-none">
-      <div className="space-y-5">
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const handleItemClick = (id: string) => {
+    onChangeTab(id);
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  const navContent = (
+    <div className="flex flex-col h-full justify-between p-3.5 select-none bg-[#0A0D10]">
+      <div className="space-y-5 overflow-y-auto pr-1">
         {/* Brand Header */}
-        <div className="flex items-center gap-2.5 px-2 py-1.5 border-b border-[#232A32] pb-3">
-          <div className="w-8 h-8 rounded bg-[#12161B] border border-[#E8A33D]/50 flex items-center justify-center text-[#E8A33D] font-mono font-black text-sm tracking-tighter shadow-sm">
-            TX
-          </div>
-          <div>
-            <div className="font-bold text-sm text-[#E7EBEF] tracking-tight flex items-center gap-1.5 font-display">
-              <span>TraceX</span>
-              <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#E8A33D15] text-[#E8A33D] border border-[#E8A33D30]">CORE</span>
+        <div className="flex items-center justify-between px-2 py-1.5 border-b border-[#232A32] pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded bg-[#12161B] border border-[#E8A33D]/50 flex items-center justify-center text-[#E8A33D] font-mono font-black text-sm tracking-tighter shadow-sm">
+              TX
             </div>
-            <div className="text-[10px] text-[#8B96A3] font-mono">Forensic Intelligence</div>
+            <div>
+              <div className="font-bold text-sm text-[#E7EBEF] tracking-tight flex items-center gap-1.5 font-display">
+                <span>TraceX</span>
+                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-[#E8A33D15] text-[#E8A33D] border border-[#E8A33D30]">CORE</span>
+              </div>
+              <div className="text-[10px] text-[#8B96A3] font-mono">Forensic Intelligence</div>
+            </div>
           </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="lg:hidden p-1.5 rounded text-[#8B96A3] hover:text-[#E7EBEF] hover:bg-[#191F26]"
+              aria-label="Close Navigation"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Categorized Navigation */}
@@ -78,15 +115,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onChangeTab, alertC
                   return (
                     <button
                       key={item.id}
-                      onClick={() => onChangeTab(item.id)}
-                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-medium transition-colors ${
+                      onClick={() => handleItemClick(item.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs font-medium transition-colors min-h-[40px] ${
                         isActive
                           ? 'bg-[#191F26] text-[#E8A33D] font-semibold border-l-2 border-[#E8A33D] shadow-sm'
                           : 'text-[#8B96A3] hover:text-[#E7EBEF] hover:bg-[#12161B]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#E8A33D]' : 'text-[#8B96A3]'}`} />
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-[#E8A33D]' : 'text-[#8B96A3]'}`} />
                         <span>{item.label}</span>
                       </div>
                       {item.badge !== undefined && (
@@ -104,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onChangeTab, alertC
       </div>
 
       {/* System Telemetry Footer */}
-      <div className="p-2.5 rounded bg-[#12161B] border border-[#232A32] text-[10px] font-mono text-[#8B96A3] space-y-1">
+      <div className="p-2.5 rounded bg-[#12161B] border border-[#232A32] text-[10px] font-mono text-[#8B96A3] space-y-1 mt-4">
         <div className="flex items-center justify-between text-[#E7EBEF]">
           <span className="text-[#8B96A3]">Node Ref</span>
           <span className="text-[#E8A33D] font-semibold">PS-26106</span>
@@ -116,7 +153,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onChangeTab, alertC
           </span>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden lg:flex w-60 xl:w-64 bg-[#0A0D10] border-r border-[#232A32] flex-col justify-between z-30 select-none flex-shrink-0">
+        {navContent}
+      </aside>
+
+      {/* Mobile/Tablet Slide-Over Drawer */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            onClick={onClose}
+            className="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity animate-in fade-in"
+            aria-hidden="true"
+          />
+          {/* Drawer Container */}
+          <div className="relative w-72 max-w-[85vw] h-full bg-[#0A0D10] border-r border-[#232A32] shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            {navContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

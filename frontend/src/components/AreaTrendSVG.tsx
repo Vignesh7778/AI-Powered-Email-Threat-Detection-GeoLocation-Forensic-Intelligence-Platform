@@ -54,6 +54,7 @@ export const AreaTrendSVG: React.FC<AreaTrendSVGProps> = ({
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-auto"
         onMouseLeave={() => setHoverIndex(null)}
+        onTouchEnd={() => setHoverIndex(null)}
       >
         <defs>
           <linearGradient id="gradCrit" x1="0" y1="0" x2="0" y2="1">

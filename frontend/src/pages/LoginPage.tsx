@@ -47,7 +47,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   return (
     <div className="min-h-screen bg-[#0A0D10] text-[#E7EBEF] flex flex-col justify-between selection:bg-[#E8A33D]/20 selection:text-[#E8A33D]">
       {/* Top Bar */}
-      <header className="h-16 px-8 flex items-center justify-between border-b border-[#232A32] bg-[#0A0D10]/80 backdrop-blur-xs z-20">
+      <header className="h-16 px-4 sm:px-8 flex items-center justify-between border-b border-[#232A32] bg-[#0A0D10]/80 backdrop-blur-xs z-20">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-[#12161B] border border-[#E8A33D]/60 flex items-center justify-center text-[#E8A33D] font-mono font-black text-sm shadow-[0_0_12px_rgba(232,163,61,0.2)]">
             TX
@@ -68,14 +68,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <RadioTower className="w-3.5 h-3.5 animate-pulse" />
             <span>Forensic Node: AICTE-26106</span>
           </div>
-          <span className="px-2.5 py-1 rounded bg-[#12161B] border border-[#232A32] text-[#8B96A3]">
+          <span className="px-2.5 py-1 rounded bg-[#12161B] border border-[#232A32] text-[#8B96A3] text-[11px]">
             v2.4 Enterprise
           </span>
         </div>
       </header>
 
       {/* Main Split Body */}
-      <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 p-8 lg:p-12 items-center relative">
+      <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 p-4 sm:p-8 lg:p-12 items-center relative">
         {/* Subtle Background Equirectangular Topology Pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-5 overflow-hidden flex items-center justify-center">
           <svg viewBox="0 0 1000 500" className="w-full h-full">
@@ -94,27 +94,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
 
         {/* LEFT COLUMN: Branding, Heading, 4 Capabilities */}
-        <div className="lg:col-span-7 space-y-8 z-10">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#12161B] border border-[#232A32] font-mono text-xs text-[#E8A33D]">
+        <div className="lg:col-span-7 space-y-6 sm:space-y-8 z-10">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#12161B] border border-[#232A32] font-mono text-[11px] sm:text-xs text-[#E8A33D]">
               <span className="w-2 h-2 rounded-full bg-[#E8A33D] animate-pulse" />
               <span>Court-Admissible Email Forensic Workstation</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#E7EBEF] font-sans leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#E7EBEF] font-sans leading-tight">
               AI-Powered <br />
               <span className="text-[#E8A33D]">Email Threat Detection</span>,<br />
               GeoLocation & Forensic Intelligence
             </h1>
 
-            <p className="text-sm text-[#8B96A3] font-sans max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#8B96A3] font-sans max-w-xl leading-relaxed">
               TraceX empowers analysts to detect advanced email threats, trace malicious infrastructure, uncover origins, and generate evidence-backed intelligence with confidence.
             </p>
           </div>
 
           {/* 4 Key Forensic Capability Items */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl font-mono text-xs">
-            <div className="p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-xl font-mono text-xs">
+            <div className="p-3 sm:p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1">
               <div className="flex items-center gap-2 text-[#E8A33D] font-bold">
                 <ShieldAlert className="w-4 h-4" />
                 <span>Threat Detection</span>
@@ -122,7 +122,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <div className="text-[11px] text-[#8B96A3] font-sans">AI & ML-Powered BEC and Phishing Detection</div>
             </div>
 
-            <div className="p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1.5">
+            <div className="p-3 sm:p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1">
               <div className="flex items-center gap-2 text-[#2DD4BF] font-bold">
                 <Globe className="w-4 h-4" />
                 <span>Geo-Intelligence</span>
@@ -130,7 +130,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <div className="text-[11px] text-[#8B96A3] font-sans">Observable IP & Autonomous System Mapping</div>
             </div>
 
-            <div className="p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1.5">
+            <div className="p-3 sm:p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1">
               <div className="flex items-center gap-2 text-[#8B8FE8] font-bold">
                 <FileSearch className="w-4 h-4" />
                 <span>Forensic Analysis</span>
@@ -138,7 +138,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <div className="text-[11px] text-[#8B96A3] font-sans">Cryptographic Evidence & Campaign Attribution</div>
             </div>
 
-            <div className="p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1.5">
+            <div className="p-3 sm:p-3.5 rounded bg-[#12161B] border border-[#232A32] space-y-1">
               <div className="flex items-center gap-2 text-[#E8A33D] font-bold">
                 <Workflow className="w-4 h-4" />
                 <span>Investigation</span>
@@ -150,9 +150,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
         {/* RIGHT COLUMN: Authentication Card */}
         <div className="lg:col-span-5 z-10">
-          <div className="bg-[#12161B] p-8 rounded-lg border border-[#232A32] shadow-2xl space-y-6">
+          <div className="bg-[#12161B] p-5 sm:p-8 rounded-lg border border-[#232A32] shadow-2xl space-y-5 sm:space-y-6">
             <div className="space-y-1">
-              <h2 className="text-lg font-bold text-[#E7EBEF] font-sans tracking-tight">Welcome Back</h2>
+              <h2 className="text-base sm:text-lg font-bold text-[#E7EBEF] font-sans tracking-tight">Welcome Back</h2>
               <p className="text-xs text-[#8B96A3] font-mono">Sign in to access your TraceX Workbench</p>
             </div>
 
@@ -176,7 +176,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="analyst@org.gov"
-                    className="w-full pl-9 pr-3 py-2 bg-[#0A0D10] border border-[#232A32] rounded text-[#E7EBEF] placeholder-[#566270] focus:outline-none focus:border-[#E8A33D] transition-colors"
+                    className="w-full pl-9 pr-3 py-2 bg-[#0A0D10] border border-[#232A32] rounded text-[#E7EBEF] placeholder-[#566270] focus:outline-hidden focus:border-[#E8A33D] transition-colors min-h-[38px]"
                   />
                 </div>
               </div>
@@ -193,7 +193,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-9 pr-3 py-2 bg-[#0A0D10] border border-[#232A32] rounded text-[#E7EBEF] placeholder-[#566270] focus:outline-none focus:border-[#E8A33D] transition-colors"
+                    className="w-full pl-9 pr-3 py-2 bg-[#0A0D10] border border-[#232A32] rounded text-[#E7EBEF] placeholder-[#566270] focus:outline-hidden focus:border-[#E8A33D] transition-colors min-h-[38px]"
                   />
                 </div>
               </div>
@@ -202,7 +202,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded bg-[#E8A33D] hover:bg-[#E8A33D]/90 text-[#0A0D10] text-xs font-mono font-bold shadow-md transition-all disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded bg-[#E8A33D] hover:bg-[#E8A33D]/90 text-[#0A0D10] text-xs font-mono font-bold shadow-md transition-all disabled:opacity-50 min-h-[40px]"
                 >
                   <span>{loading ? 'Authenticating...' : 'Authenticate & Access Workbench'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -212,7 +212,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   type="button"
                   onClick={handleDemoLogin}
                   disabled={loading}
-                  className="w-full py-2 px-4 rounded bg-[#0A0D10] hover:bg-[#191F26] border border-[#232A32] text-[#8B96A3] hover:text-[#E7EBEF] text-xs font-mono transition-colors"
+                  className="w-full py-2 px-4 rounded bg-[#0A0D10] hover:bg-[#191F26] border border-[#232A32] text-[#8B96A3] hover:text-[#E7EBEF] text-xs font-mono transition-colors min-h-[38px]"
                 >
                   Access Read-Only Dashboard
                 </button>
@@ -230,7 +230,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       </div>
 
       {/* Footer */}
-      <footer className="px-8 py-4 border-t border-[#232A32] text-[11px] font-mono text-[#566270] flex flex-wrap items-center justify-between gap-4 bg-[#0A0D10]">
+      <footer className="px-4 sm:px-8 py-3 sm:py-4 border-t border-[#232A32] text-[11px] font-mono text-[#566270] flex flex-wrap items-center justify-between gap-3 bg-[#0A0D10]">
         <div>© 2026 TraceX Forensic Intelligence. All rights reserved.</div>
         <div className="flex items-center gap-4">
           <span className="hover:text-[#8B96A3] cursor-pointer">Help</span>

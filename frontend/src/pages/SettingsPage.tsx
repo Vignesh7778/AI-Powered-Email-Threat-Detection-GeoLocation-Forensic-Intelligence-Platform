@@ -15,23 +15,25 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-[1200px] w-full mx-auto bg-[#0A0D10] text-[#E7EBEF]">
-      <div className="flex items-center justify-between pb-4 border-b border-[#232A32]">
+    <div className="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-6 max-w-[1200px] w-full mx-auto bg-[#0A0D10] text-[#E7EBEF]">
+      <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#232A32]">
         <div>
-          <h1 className="text-lg font-bold text-[#E7EBEF] tracking-tight font-sans">Platform Configuration & Policy</h1>
-          <p className="text-xs font-mono text-[#8B96A3] mt-0.5">
+          <h1 className="text-base sm:text-lg font-bold text-[#E7EBEF] tracking-tight font-sans">
+            Platform Configuration & Policy
+          </h1>
+          <p className="text-[11px] sm:text-xs font-mono text-[#8B96A3] mt-0.5">
             Configurable tenant privacy controls, audit retention horizons, and intelligence providers
           </p>
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6 font-mono text-xs">
+      <form onSubmit={handleSave} className="space-y-4 sm:space-y-6 font-mono text-xs">
         {/* System Provider Health Matrix */}
-        <div className="p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4">
-          <div className="text-sm font-bold text-[#E7EBEF] font-sans border-b border-[#232A32] pb-2">
+        <div className="p-4 sm:p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4">
+          <div className="text-xs sm:text-sm font-bold text-[#E7EBEF] font-sans border-b border-[#232A32] pb-2">
             1. Intelligence Providers & Engine Status
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="p-3.5 rounded bg-[#0A0D10] border border-[#232A32] flex items-center justify-between">
               <div className="space-y-0.5">
                 <div className="font-bold text-[#E7EBEF] flex items-center gap-1.5">
@@ -65,8 +67,8 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         {/* Retention Slider with Named Stops */}
-        <div className="p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4">
-          <div className="text-sm font-bold text-[#E7EBEF] font-sans border-b border-[#232A32] pb-2">
+        <div className="p-4 sm:p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4">
+          <div className="text-xs sm:text-sm font-bold text-[#E7EBEF] font-sans border-b border-[#232A32] pb-2">
             2. Evidence & Audit Retention Horizon
           </div>
           <div className="space-y-3 max-w-xl">
@@ -93,11 +95,11 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         {/* Masking Level as 3 Radio Cards */}
-        <div className="p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4">
-          <div className="text-sm font-bold text-[#E7EBEF] font-sans border-b border-[#232A32] pb-2">
+        <div className="p-4 sm:p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4">
+          <div className="text-xs sm:text-sm font-bold text-[#E7EBEF] font-sans border-b border-[#232A32] pb-2">
             3. PII Privacy Masking Policy
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {[
               { id: 'FULL', title: 'FULL DISCLOSURE', desc: 'Raw headers and emails visible to cleared investigators.' },
               { id: 'MASKED', title: 'MASKED (RECOMMENDED)', desc: 'Redacts local parts (e.g. j***@domain.com) in UI.' },
@@ -106,7 +108,7 @@ export const SettingsPage: React.FC = () => {
               <div
                 key={card.id}
                 onClick={() => setMaskingLevel(card.id as any)}
-                className={`p-4 rounded border cursor-pointer transition-all space-y-1.5 ${
+                className={`p-3.5 sm:p-4 rounded border cursor-pointer transition-all space-y-1.5 ${
                   maskingLevel === card.id
                     ? 'bg-[#191F26] border-[#E8A33D]'
                     : 'bg-[#0A0D10] border-[#232A32] hover:border-[#3A4551]'
@@ -122,7 +124,7 @@ export const SettingsPage: React.FC = () => {
         <div className="flex items-center justify-end gap-3 pt-2">
           <button
             type="submit"
-            className="flex items-center gap-2 px-4 py-2 rounded bg-[#E8A33D] hover:bg-[#E8A33D]/90 text-[#0A0D10] text-xs font-mono font-bold transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded bg-[#E8A33D] hover:bg-[#E8A33D]/90 text-[#0A0D10] text-xs font-mono font-bold transition-all min-h-[40px]"
           >
             {saved ? <Check className="w-4 h-4" /> : null}
             <span>{saved ? 'Policy Saved' : 'Save Governance Policy'}</span>

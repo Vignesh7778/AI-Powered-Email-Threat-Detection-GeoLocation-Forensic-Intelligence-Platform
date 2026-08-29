@@ -293,69 +293,69 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
       />
 
       {/* Top Workstation Header Bar */}
-      <div className="bg-[#12161B] border-b border-[#232A32] px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-20">
-        <div className="flex items-center gap-4">
+      <div className="bg-[#12161B] border-b border-[#232A32] px-3 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-20">
+        <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
           <button
             onClick={onBack}
-            className="p-2 rounded bg-[#0A0D10] border border-[#232A32] text-[#8B96A3] hover:text-white hover:border-[#3A4551] transition-colors"
+            className="p-2 rounded bg-[#0A0D10] border border-[#232A32] text-[#8B96A3] hover:text-white hover:border-[#3A4551] transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center flex-shrink-0"
             title="Return to Email Analysis Desk"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
 
-          <div>
-            <div className="flex items-center gap-2.5 font-mono text-xs">
-              <span className="text-[10px] uppercase font-bold text-[#8B96A3] tracking-widest">
-                EMAIL INVESTIGATION
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 font-mono text-[11px] sm:text-xs">
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-[#8B96A3] tracking-widest hidden xs:inline">
+                INVESTIGATION
               </span>
-              <span className="text-[#566270]">|</span>
+              <span className="text-[#566270] hidden xs:inline">|</span>
               <span className="text-[#E8A33D] font-bold">
                 CASE-{submissionId.slice(0, 8).toUpperCase()}
               </span>
-              <span className="text-[#566270]">|</span>
-              <span className="text-[#8B96A3]">SHA-256:</span>
+              <span className="text-[#566270] hidden sm:inline">|</span>
+              <span className="text-[#8B96A3] hidden sm:inline">SHA-256:</span>
               <span
                 onClick={() => openHashDrawer(submission?.sha256_hash || submissionId, 'Raw Email Artifact')}
-                className="text-[#E7EBEF] cursor-pointer hover:underline"
+                className="text-[#E7EBEF] cursor-pointer hover:underline truncate max-w-[120px] sm:max-w-[200px]"
               >
-                <DecodeReveal value={submission?.sha256_hash ? submission.sha256_hash.slice(0, 16) + '...' : 'SEALED'} />
+                <DecodeReveal value={submission?.sha256_hash ? submission.sha256_hash.slice(0, 12) + '...' : 'SEALED'} />
               </span>
             </div>
 
-            <div className="text-base font-bold text-[#E7EBEF] truncate max-w-2xl mt-0.5 font-sans">
+            <div className="text-sm sm:text-base font-bold text-[#E7EBEF] truncate max-w-2xl mt-0.5 font-sans">
               {submission?.subject || 'No Subject Defined in MIME Headers'}
             </div>
           </div>
         </div>
 
         {/* Severity & Numerical Verdict Bar */}
-        <div className="flex items-center gap-4 font-mono">
-          <div className="flex items-center gap-2">
-            <ThreatBadge type="risk" value={assessment.risk_level} size="md" />
-            <ThreatBadge type="classification" value={assessment.classification} size="md" />
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 font-mono">
+          <div className="flex items-center gap-1.5">
+            <ThreatBadge type="risk" value={assessment.risk_level} size="xs" />
+            <ThreatBadge type="classification" value={assessment.classification} size="xs" />
           </div>
 
-          <div className="px-3 py-1.5 rounded bg-[#0A0D10] border border-[#232A32] text-right">
-            <div className="text-xs font-bold text-[#E7EBEF]">{scorePercent} / 100</div>
-            <div className="text-[9px] uppercase font-bold text-[#E8A33D]">Risk Score</div>
+          <div className="px-2.5 sm:px-3 py-1 rounded bg-[#0A0D10] border border-[#232A32] text-right">
+            <div className="text-xs font-bold text-[#E7EBEF]">{scorePercent}/100</div>
+            <div className="text-[8px] sm:text-[9px] uppercase font-bold text-[#E8A33D]">Risk Score</div>
           </div>
 
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded bg-[#0A0D10] border border-[#232A32] text-xs text-[#8B96A3] hover:text-[#E8A33D] hover:border-[#E8A33D40] disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded bg-[#0A0D10] border border-[#232A32] text-xs text-[#8B96A3] hover:text-[#E8A33D] hover:border-[#E8A33D40] disabled:opacity-50 transition-colors min-h-[36px]"
             title="Re-query live DNS, GeoIP, and Groq telemetry"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#E8A33D]' : ''}`} />
-            <span>{refreshing ? 'Re-Querying...' : 'Re-Query'}</span>
+            <span className="hidden xs:inline">{refreshing ? 'Re-Querying...' : 'Re-Query'}</span>
           </button>
         </div>
       </div>
 
       {/* Main Workspace */}
-      <div className="p-6 space-y-6 max-w-[1600px] w-full mx-auto">
-        {/* Case-File Folder Tabs */}
-        <div className="border-b border-[#232A32] flex items-center gap-1 overflow-x-auto pb-px">
+      <div className="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-6 max-w-[1720px] w-full mx-auto">
+        {/* Case-File Folder Tabs (Horizontally Touch-Scrollable) */}
+        <div className="border-b border-[#232A32] flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
           {tabs.map((t) => {
             const Icon = t.icon;
             const isActive = activeTab === t.id;
@@ -363,9 +363,9 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
               <button
                 key={t.id}
                 onClick={() => handleTabChange(t.id)}
-                className={`case-tab flex items-center gap-2 px-3.5 py-2.5 text-xs font-mono whitespace-nowrap transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 text-xs font-mono whitespace-nowrap rounded-t transition-all flex-shrink-0 min-h-[38px] ${
                   isActive
-                    ? 'case-tab-active bg-[#12161B] text-[#E8A33D] font-bold border-t-2 border-[#E8A33D]'
+                    ? 'bg-[#12161B] text-[#E8A33D] font-bold border-t-2 border-[#E8A33D]'
                     : 'bg-[#12161B]/40 text-[#8B96A3] hover:text-[#E7EBEF] hover:bg-[#12161B]'
                 }`}
               >
@@ -378,10 +378,10 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
 
         {/* TAB 1: OVERVIEW */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-              {/* Left: Score Gauge & Breakdown (5 cols) */}
-              <div className="lg:col-span-5 p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4 font-mono text-xs">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+              {/* Left: Score Gauge & Breakdown (5 cols on lg) */}
+              <div className="lg:col-span-5 p-4 sm:p-5 rounded-lg bg-[#12161B] border border-[#232A32] space-y-4 font-mono text-xs">
                 <ScoreGauge
                   score={scorePercent}
                   riskLevel={assessment.risk_level}
@@ -397,9 +397,9 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                 />
               </div>
 
-              {/* Right: Why Was This Flagged? Contributing Factors (7 cols) */}
+              {/* Right: Why Was This Flagged? Contributing Factors (7 cols on lg) */}
               <div className="lg:col-span-7 bg-[#12161B] rounded-lg border border-[#232A32] overflow-hidden flex flex-col justify-between">
-                <div className="px-5 py-3.5 border-b border-[#232A32] flex items-center justify-between">
+                <div className="px-4 sm:px-5 py-3 sm:py-3.5 border-b border-[#232A32] flex items-center justify-between">
                   <h3 className="text-xs font-mono uppercase font-bold text-[#E7EBEF] flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#E8A33D]" />
                     <span>WHY WAS THIS FLAGGED? Contributing Evidence Factors</span>
@@ -413,10 +413,10 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                       <div
                         key={idx}
                         onClick={() => openDomainDrawer(domain?.sender_domain || 'paypa1.com', true)}
-                        className="p-3.5 flex items-start justify-between gap-4 hover:bg-[#191F26] cursor-pointer transition-colors"
+                        className="p-3.5 flex items-start justify-between gap-3 sm:gap-4 hover:bg-[#191F26] cursor-pointer transition-colors"
                       >
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2">
+                        <div className="space-y-1 flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
                             <span className="px-2 py-0.5 rounded bg-[#0A0D10] text-[#E8A33D] border border-[#E8A33D30] text-[10px] font-bold uppercase">
                               {ind.type.replace(/_/g, ' ')}
                             </span>
@@ -425,18 +425,18 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                           <p className="text-[#E7EBEF] text-xs font-sans mt-0.5">{ind.detail}</p>
                         </div>
                         <span className="text-[10px] text-[#E8A33D] hover:underline flex-shrink-0">
-                          Inspect Evidence →
+                          Inspect →
                         </span>
                       </div>
                     ))
                   ) : (
-                    <div className="p-12 text-center text-[#8B96A3] text-xs">
+                    <div className="p-8 sm:p-12 text-center text-[#8B96A3] text-xs">
                       No high-risk threat indicators observed. Message matches authentic parameters.
                     </div>
                   )}
                 </div>
 
-                <div className="px-5 py-2.5 border-t border-[#232A32] bg-[#0A0D10]/50 text-[10px] font-mono text-[#566270] flex items-center justify-between">
+                <div className="px-4 sm:px-5 py-2.5 border-t border-[#232A32] bg-[#0A0D10]/50 text-[10px] font-mono text-[#566270] flex items-center justify-between">
                   <span>Strict Four-Tier Truth Grounding</span>
                   <span className="text-[#2DD4BF]">● Court Admissible</span>
                 </div>
@@ -448,8 +448,8 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 2: HEADERS */}
         {activeTab === 'headers' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">RFC 5322 Forensic Header Viewer</h3>
                   <p className="text-[11px] text-[#8B96A3] font-sans">Envelope, sender addresses, message routing and cryptographic tags</p>
@@ -457,14 +457,14 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => copyToClipboard(JSON.stringify(submission, null, 2), 'rawHeaders')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0A0D10] border border-[#232A32] text-[#8B96A3] hover:text-white"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0A0D10] border border-[#232A32] text-[#8B96A3] hover:text-white min-h-[34px]"
                   >
                     {copiedField === 'rawHeaders' ? <Check className="w-3.5 h-3.5 text-[#2DD4BF]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedField === 'rawHeaders' ? 'Copied' : 'Copy All'}</span>
                   </button>
                   <button
                     onClick={() => setRawModalOpen(true)}
-                    className="px-3 py-1.5 rounded bg-[#E8A33D] text-[#0A0D10] font-bold"
+                    className="px-3 py-1.5 rounded bg-[#E8A33D] text-[#0A0D10] font-bold min-h-[34px]"
                   >
                     Raw Headers
                   </button>
@@ -479,10 +479,10 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                   { field: 'Message-ID', value: `<${submissionId}@forensics.trace.local>`, status: 'ANOMALY' },
                   { field: 'Return-Path', value: '<bounce@paypa1.com>', status: 'MISMATCH' }
                 ].map((row, i) => (
-                  <div key={i} className="p-3 rounded bg-[#0A0D10] border border-[#232A32] flex items-center justify-between gap-4">
-                    <div className="w-32 text-[#8B96A3] font-bold uppercase text-[11px]">{row.field}:</div>
-                    <div className="flex-1 text-[#E7EBEF] truncate font-mono">{row.value}</div>
-                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${
+                  <div key={i} className="p-3 rounded bg-[#0A0D10] border border-[#232A32] flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 sm:gap-4">
+                    <div className="w-28 sm:w-32 text-[#8B96A3] font-bold uppercase text-[11px] flex-shrink-0">{row.field}:</div>
+                    <div className="flex-1 text-[#E7EBEF] truncate font-mono min-w-0">{row.value}</div>
+                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase border flex-shrink-0 ${
                       row.status === 'MISMATCH' || row.status === 'ANOMALY' || row.status === 'SUSPECT'
                         ? 'bg-[#E5484D15] text-[#E5484D] border-[#E5484D40]'
                         : 'bg-[#2DD4BF10] text-[#2DD4BF] border-[#2DD4BF30]'
@@ -499,7 +499,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 3: AUTHENTICATION */}
         {activeTab === 'auth' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Cryptographic Authentication Matrix</h3>
@@ -508,40 +508,42 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                 <ThreatBadge type="trust" value="observed" size="xs" />
               </div>
 
-              <table className="w-full text-left font-mono text-xs">
-                <thead>
-                  <tr className="border-b border-[#232A32] bg-[#0A0D10]/60 text-[#8B96A3] text-[10px] uppercase">
-                    <th className="py-2.5 px-4">Protocol Check</th>
-                    <th className="py-2.5 px-4">Result</th>
-                    <th className="py-2.5 px-4">Domain Inspected</th>
-                    <th className="py-2.5 px-4">Authoritative Source</th>
-                    <th className="py-2.5 px-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#232A32]">
-                  <tr>
-                    <td className="py-3 px-4 font-bold text-[#E7EBEF]">SPF (Sender Policy)</td>
-                    <td className="py-3 px-4 font-bold uppercase" style={{ color: auth.spf === 'pass' ? '#2DD4BF' : '#E5484D' }}>{auth.spf}</td>
-                    <td className="py-3 px-4 text-[#8B96A3]">{domain?.sender_domain || 'paypa1.com'}</td>
-                    <td className="py-3 px-4 text-[#8B96A3]">DNS TXT Record</td>
-                    <td className="py-3 px-4"><ThreatBadge type="trust" value="observed" size="xs" /></td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-bold text-[#E7EBEF]">DKIM (Signature)</td>
-                    <td className="py-3 px-4 font-bold uppercase" style={{ color: auth.dkim === 'pass' ? '#2DD4BF' : '#566270' }}>{auth.dkim}</td>
-                    <td className="py-3 px-4 text-[#8B96A3]">k1._domainkey.paypa1.com</td>
-                    <td className="py-3 px-4 text-[#8B96A3]">Cryptographic Body Hash</td>
-                    <td className="py-3 px-4"><ThreatBadge type="trust" value="observed" size="xs" /></td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-bold text-[#E7EBEF]">DMARC Policy</td>
-                    <td className="py-3 px-4 font-bold uppercase" style={{ color: auth.dmarc === 'pass' ? '#2DD4BF' : '#E5484D' }}>{auth.dmarc}</td>
-                    <td className="py-3 px-4 text-[#8B96A3]">_dmarc.paypa1.com</td>
-                    <td className="py-3 px-4 text-[#8B96A3]">Domain Policy Enforcement</td>
-                    <td className="py-3 px-4"><ThreatBadge type="trust" value="observed" size="xs" /></td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left font-mono text-xs">
+                  <thead>
+                    <tr className="border-b border-[#232A32] bg-[#0A0D10]/60 text-[#8B96A3] text-[10px] uppercase">
+                      <th className="py-2.5 px-4">Protocol Check</th>
+                      <th className="py-2.5 px-4">Result</th>
+                      <th className="py-2.5 px-4">Domain Inspected</th>
+                      <th className="py-2.5 px-4">Authoritative Source</th>
+                      <th className="py-2.5 px-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#232A32]">
+                    <tr>
+                      <td className="py-3 px-4 font-bold text-[#E7EBEF]">SPF (Sender Policy)</td>
+                      <td className="py-3 px-4 font-bold uppercase" style={{ color: auth.spf === 'pass' ? '#2DD4BF' : '#E5484D' }}>{auth.spf}</td>
+                      <td className="py-3 px-4 text-[#8B96A3]">{domain?.sender_domain || 'paypa1.com'}</td>
+                      <td className="py-3 px-4 text-[#8B96A3]">DNS TXT Record</td>
+                      <td className="py-3 px-4"><ThreatBadge type="trust" value="observed" size="xs" /></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-bold text-[#E7EBEF]">DKIM (Signature)</td>
+                      <td className="py-3 px-4 font-bold uppercase" style={{ color: auth.dkim === 'pass' ? '#2DD4BF' : '#566270' }}>{auth.dkim}</td>
+                      <td className="py-3 px-4 text-[#8B96A3]">k1._domainkey.paypa1.com</td>
+                      <td className="py-3 px-4 text-[#8B96A3]">Cryptographic Body Hash</td>
+                      <td className="py-3 px-4"><ThreatBadge type="trust" value="observed" size="xs" /></td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-bold text-[#E7EBEF]">DMARC Policy</td>
+                      <td className="py-3 px-4 font-bold uppercase" style={{ color: auth.dmarc === 'pass' ? '#2DD4BF' : '#E5484D' }}>{auth.dmarc}</td>
+                      <td className="py-3 px-4 text-[#8B96A3]">_dmarc.paypa1.com</td>
+                      <td className="py-3 px-4 text-[#8B96A3]">Domain Policy Enforcement</td>
+                      <td className="py-3 px-4"><ThreatBadge type="trust" value="observed" size="xs" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -549,7 +551,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 4: RELAY PATH */}
         {activeTab === 'relays' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Vertical Relay Path Timeline</h3>
@@ -563,18 +565,18 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                   <div
                     key={i}
                     onClick={() => openIPDrawer(origin?.originating_ip || '185.220.101.5', origin?.geolocation?.isp, origin?.geolocation?.city)}
-                    className="p-4 rounded bg-[#0A0D10] border border-[#232A32] hover:border-[#E8A33D] cursor-pointer space-y-2 transition-all"
+                    className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] hover:border-[#E8A33D] cursor-pointer space-y-2 transition-all"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-[#191F26] border border-[#E8A33D] text-[#E8A33D] flex items-center justify-center font-bold text-[10px]">
+                        <span className="w-5 h-5 rounded-full bg-[#191F26] border border-[#E8A33D] text-[#E8A33D] flex items-center justify-center font-bold text-[10px] flex-shrink-0">
                           0{i + 1}
                         </span>
                         <span className="font-bold text-[#E7EBEF]">{hop.label}</span>
                       </div>
                       <span className="text-[10px] text-[#8B96A3]">Received via ESMTPA</span>
                     </div>
-                    <div className="text-[11px] text-[#8B96A3] pl-7">
+                    <div className="text-[11px] text-[#8B96A3] pl-7 break-all">
                       Host: <span className="text-[#E7EBEF]">{hop.subLabel}</span> | Sealed: <span className="text-[#2DD4BF]">{hop.hashLink}</span>
                     </div>
                   </div>
@@ -587,7 +589,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 5: GEOLOCATION */}
         {activeTab === 'geomap' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-3">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-3">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Observable Infrastructure Map</h3>
@@ -604,8 +606,6 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                   openIPDrawer(node.ip, node.isp || undefined, node.city || undefined);
                 }}
               />
-
-
             </div>
           </div>
         )}
@@ -613,7 +613,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 6: DOMAIN INTEL */}
         {activeTab === 'domain' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Lookalike Domain Diff & Character Analysis</h3>
@@ -623,9 +623,9 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
               </div>
 
               {/* Character Diff Component */}
-              <div className="p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-3">
+              <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-3">
                 <div className="text-[11px] text-[#8B96A3]">Target Brand vs. Suspect Sender Domain Comparison:</div>
-                <div className="flex items-center gap-3 text-sm">
+                <div className="flex flex-wrap items-center gap-3 text-sm">
                   <div
                     onClick={() => openDomainDrawer('paypal.com', false)}
                     className="p-2 rounded bg-[#12161B] border border-[#232A32] cursor-pointer hover:border-[#2DD4BF]"
@@ -655,7 +655,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 7: URLS */}
         {activeTab === 'urls' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">URL & Hyperlink Analysis</h3>
@@ -664,15 +664,15 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                 <ThreatBadge type="trust" value="verified" size="xs" />
               </div>
 
-              <div className="p-3 rounded bg-[#0A0D10] border border-[#E5484D40] space-y-2">
+              <div className="p-3.5 rounded bg-[#0A0D10] border border-[#E5484D40] space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[#E5484D] font-bold text-xs uppercase">Destination Mismatch Detected</span>
                   <ThreatBadge type="risk" value="critical" size="xs" />
                 </div>
-                <div className="text-[11px] text-[#8B96A3]">
+                <div className="text-[11px] text-[#8B96A3] break-all">
                   Displayed Text: <span className="text-[#2DD4BF]">https://www.paypal.com/signin</span>
                 </div>
-                <div className="text-[11px] text-[#E5484D]">
+                <div className="text-[11px] text-[#E5484D] break-all">
                   Actual Destination: <span className="font-bold underline">https://paypa1.com-auth-secure.net/login.php</span>
                 </div>
               </div>
@@ -683,7 +683,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 8: ATTACHMENTS */}
         {activeTab === 'attachments' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Attachment Forensics</h3>
@@ -694,13 +694,13 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
 
               <div
                 onClick={() => openHashDrawer('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'Invoice_Payment_Receipt.pdf')}
-                className="p-4 rounded bg-[#0A0D10] border border-[#232A32] hover:border-[#E8A33D] cursor-pointer space-y-2"
+                className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] hover:border-[#E8A33D] cursor-pointer space-y-2"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-[#E7EBEF]">Invoice_Payment_Receipt.pdf</span>
                   <ThreatBadge type="risk" value="high" size="xs" />
                 </div>
-                <div className="text-[11px] text-[#8B96A3] truncate">
+                <div className="text-[11px] text-[#8B96A3] break-all">
                   SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
                 </div>
               </div>
@@ -711,7 +711,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 9: AI ASSESSMENT */}
         {activeTab === 'ai' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Groq AI Evidence-Grounded Reasoning Layer</h3>
@@ -722,13 +722,13 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
 
               {groq ? (
                 <div className="space-y-4">
-                  <div className="p-4 rounded bg-[#0A0D10] border-l-4 border-l-[#8B8FE8] border-y border-r border-[#232A32] space-y-2">
+                  <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border-l-4 border-l-[#8B8FE8] border-y border-r border-[#232A32] space-y-2">
                     <div className="text-[10px] uppercase font-bold text-[#8B8FE8]">Executive Summary & Assessment:</div>
                     <p className="text-[#E7EBEF] text-xs font-sans leading-relaxed">{groq.assessment}</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-2">
+                    <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-2">
                       <div className="text-[11px] font-bold text-[#2DD4BF] uppercase">Observed Facts Citing Proof:</div>
                       <div className="space-y-1.5 text-[11px]">
                         {groq.observations?.map((obs, i) => (
@@ -745,7 +745,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                       </div>
                     </div>
 
-                    <div className="p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-2">
+                    <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-2">
                       <div className="text-[11px] font-bold text-[#8B8FE8] uppercase">Probabilistic Inferences:</div>
                       <div className="space-y-1.5 text-[11px]">
                         {groq.inferences?.map((inf, i) => (
@@ -756,7 +756,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                   </div>
                 </div>
               ) : (
-                <div className="p-12 text-center text-[#8B96A3] text-xs">
+                <div className="p-8 sm:p-12 text-center text-[#8B96A3] text-xs">
                   Groq reasoning initialized and grounded in evidence.
                 </div>
               )}
@@ -767,7 +767,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 10: ATTRIBUTION GRAPH */}
         {activeTab === 'attribution' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-3">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-3">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Campaign Attribution & Relational Topology</h3>
@@ -800,7 +800,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         {/* TAB 11: CHAIN OF CUSTODY */}
         {activeTab === 'custody' && (
           <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-5 space-y-4">
+            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
                 <div>
                   <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Cryptographic Chain of Custody</h3>
@@ -814,7 +814,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
               <div className="pt-4 border-t border-[#232A32] flex items-center justify-end gap-3">
                 <button
                   onClick={() => api.downloadReport(submissionId, 'pdf')}
-                  className="flex items-center gap-2 px-4 py-2 rounded bg-[#E8A33D] hover:bg-[#E8A33D]/90 text-[#0A0D10] font-mono text-xs font-bold transition-all"
+                  className="flex items-center gap-2 px-4 py-2 rounded bg-[#E8A33D] hover:bg-[#E8A33D]/90 text-[#0A0D10] font-mono text-xs font-bold transition-all min-h-[40px]"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download Sealed PDF Dossier</span>
@@ -824,6 +824,36 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
           </div>
         )}
       </div>
+
+      {/* Raw Headers Fullscreen Modal */}
+      {rawModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xs">
+          <div className="bg-[#12161B] border border-[#232A32] rounded-lg w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl">
+            <div className="p-4 border-b border-[#232A32] flex items-center justify-between">
+              <div className="font-bold text-sm text-[#E7EBEF] font-mono">
+                RFC 5322 Raw Header Dump
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => copyToClipboard(JSON.stringify(submission, null, 2), 'rawDump')}
+                  className="px-3 py-1 bg-[#0A0D10] border border-[#232A32] rounded text-xs font-mono text-[#8B96A3] hover:text-white"
+                >
+                  {copiedField === 'rawDump' ? 'Copied' : 'Copy'}
+                </button>
+                <button
+                  onClick={() => setRawModalOpen(false)}
+                  className="px-3 py-1 bg-[#E8A33D] text-[#0A0D10] font-bold rounded text-xs font-mono"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+            <pre className="p-4 overflow-auto flex-1 font-mono text-xs text-[#2DD4BF] bg-[#0A0D10] break-all whitespace-pre-wrap select-all">
+              {JSON.stringify(submission, null, 2)}
+            </pre>
+          </div>
+        </div>
+      )}
 
       {/* Right-Side Context Slideout Drawer */}
       <DetailDrawer data={drawerData} onClose={() => setDrawerData(null)} />

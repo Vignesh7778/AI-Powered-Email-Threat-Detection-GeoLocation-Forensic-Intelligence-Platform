@@ -95,8 +95,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-start justify-center pt-20 p-4 font-mono select-none">
-      <div className="w-full max-w-2xl bg-[#12161B] border border-[#3A4551] rounded-lg shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150 flex flex-col max-h-[560px]">
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-start justify-center pt-10 sm:pt-20 p-3 sm:p-4 font-mono select-none">
+      <div className="w-full max-w-2xl bg-[#12161B] border border-[#3A4551] rounded-lg shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150 flex flex-col max-h-[80vh] sm:max-h-[560px]">
         {/* Search Header */}
         <div className="p-3.5 border-b border-[#232A32] flex items-center gap-3 bg-[#0A0D10]">
           <Search className="w-4 h-4 text-[#E8A33D] flex-shrink-0" />
@@ -105,15 +105,18 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search IP, domain, email, hash, case, or message-id..."
-            className="w-full bg-transparent text-xs text-[#E7EBEF] placeholder-[#566270] focus:outline-none font-mono"
+            placeholder="Search IP, domain, email, hash, or case..."
+            className="w-full bg-transparent text-xs text-[#E7EBEF] placeholder-[#566270] focus:outline-hidden font-mono min-h-[32px]"
           />
           {query && (
-            <button onClick={() => setQuery('')} className="p-1 text-[#8B96A3] hover:text-white">
+            <button
+              onClick={() => setQuery('')}
+              className="p-1.5 text-[#8B96A3] hover:text-white min-h-[32px] min-w-[32px] flex items-center justify-center"
+            >
               <X className="w-3.5 h-3.5" />
             </button>
           )}
-          <kbd className="px-1.5 py-0.5 rounded bg-[#191F26] border border-[#232A32] text-[9px] text-[#8B96A3]">
+          <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-[#191F26] border border-[#232A32] text-[9px] text-[#8B96A3]">
             ESC
           </kbd>
         </div>
@@ -133,12 +136,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     onClose();
                   }}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`p-3 rounded cursor-pointer transition-colors flex items-center justify-between gap-4 ${
+                  className={`p-3 rounded cursor-pointer transition-colors flex items-center justify-between gap-3 ${
                     isSelected ? 'bg-[#191F26] border border-[#E8A33D]/50' : 'hover:bg-[#191F26]/50 border border-transparent'
                   }`}
                 >
                   <div className="space-y-1 min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                       <span className="text-[#E8A33D] font-bold text-[11px]">
                         CASE-{item.submission_id.slice(0, 8).toUpperCase()}
                       </span>
@@ -172,7 +175,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         {/* Footer shortcuts */}
         <div className="p-2.5 border-t border-[#232A32] bg-[#0A0D10] text-[10px] text-[#566270] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span>↑↓ Navigate</span>
+            <span className="hidden sm:inline">↑↓ Navigate</span>
             <span>↵ Select</span>
             <span>ESC Dismiss</span>
           </div>

@@ -226,11 +226,11 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-[1600px] w-full mx-auto bg-[#0A0D10] text-[#E7EBEF]">
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#232A32]">
+    <div className="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-6 max-w-[1720px] w-full mx-auto bg-[#0A0D10] text-[#E7EBEF]">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-[#232A32]">
         <div>
-          <h1 className="text-lg font-bold text-[#E7EBEF] tracking-tight font-sans">Threat Campaign Intelligence</h1>
-          <p className="text-xs font-mono text-[#8B96A3] mt-0.5">
+          <h1 className="text-base sm:text-lg font-bold text-[#E7EBEF] tracking-tight font-sans">Threat Campaign Intelligence</h1>
+          <p className="text-[11px] sm:text-xs font-mono text-[#8B96A3] mt-0.5">
             Clustered threat campaigns correlated across shared subnets, domains, and IOC vectors
           </p>
         </div>
@@ -241,7 +241,7 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
             loadCampaigns();
           }}
           disabled={refreshing}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#12161B] border border-[#232A32] text-xs font-mono text-[#8B96A3] hover:text-[#E8A33D] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#12161B] border border-[#232A32] text-xs font-mono text-[#8B96A3] hover:text-[#E8A33D] transition-colors min-h-[36px]"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#E8A33D]' : ''}`} />
           <span>Refresh Clusters</span>
@@ -249,7 +249,7 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="w-full h-[520px] bg-[#12161B] border border-[#232A32] rounded-lg flex flex-col items-center justify-center p-8 text-center space-y-3 font-mono">
+        <div className="w-full h-[360px] sm:h-[520px] bg-[#12161B] border border-[#232A32] rounded-lg flex flex-col items-center justify-center p-6 sm:p-8 text-center space-y-3 font-mono">
           <Network className="w-10 h-10 text-[#566270]" />
           <div className="text-sm font-bold text-[#E7EBEF]">No campaign correlations available</div>
           <p className="text-xs text-[#8B96A3] max-w-md font-sans leading-relaxed">
@@ -257,21 +257,21 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           {/* Left: Campaign Selection Rail (4 cols) */}
           <div className="lg:col-span-4 space-y-3">
             <div className="text-xs font-mono uppercase tracking-wider text-[#8B96A3] font-bold px-1">
               Active Threat Clusters ({campaigns.length})
             </div>
 
-            <div className="space-y-2 max-h-[640px] overflow-y-auto">
+            <div className="space-y-2 max-h-[280px] lg:max-h-[640px] overflow-y-auto">
               {campaigns.map((camp) => {
                 const isSelected = selectedCampaignId === camp.campaign_id;
                 return (
                   <div
                     key={camp.campaign_id}
                     onClick={() => setSelectedCampaignId(camp.campaign_id)}
-                    className={`p-4 rounded-lg border transition-all cursor-pointer font-mono text-xs space-y-2.5 ${
+                    className={`p-3.5 sm:p-4 rounded-lg border transition-all cursor-pointer font-mono text-xs space-y-2 ${
                       isSelected
                         ? 'bg-[#191F26] border-[#E8A33D] shadow-md'
                         : 'bg-[#12161B] border-[#232A32] hover:border-[#3A4551]'
@@ -293,7 +293,7 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
                         Actor: <span className="text-[#E8A33D] font-semibold">{camp.threat_actor || 'Unknown'}</span>
                       </div>
                       <div className="text-[#E8A33D] hover:underline font-semibold flex items-center gap-1">
-                        <span>Inspect Topology</span>
+                        <span>Inspect</span>
                         <ArrowRight className="w-3 h-3" />
                       </div>
                     </div>
@@ -304,14 +304,14 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
           </div>
 
           {/* Right: Full Available Graph Container (8 cols) */}
-          <div className="lg:col-span-8 bg-[#12161B] rounded-lg border border-[#232A32] p-4 flex flex-col justify-between space-y-3">
-            <div className="flex items-center justify-between border-b border-[#232A32] pb-2 font-mono text-xs">
+          <div className="lg:col-span-8 bg-[#12161B] rounded-lg border border-[#232A32] p-3 sm:p-4 flex flex-col justify-between space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#232A32] pb-2 font-mono text-xs">
               <div>
                 <span className="font-bold text-[#E7EBEF] uppercase flex items-center gap-2">
                   <Share2 className="w-4 h-4 text-[#E8A33D]" />
                   <span>Attribution Topology Canvas</span>
                 </span>
-                <span className="text-[10px] text-[#8B96A3] font-sans">
+                <span className="text-[10px] text-[#8B96A3] font-sans hidden sm:inline">
                   Click any node to open context drawer. Pan and zoom supported.
                 </span>
               </div>
@@ -324,7 +324,7 @@ export const CampaignsPage: React.FC<CampaignsPageProps> = ({ onSelectSubmission
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
-              className="relative w-full h-[540px] bg-[#0A0D10] border border-[#232A32] rounded overflow-hidden cursor-grab active:cursor-grabbing select-none"
+              className="relative w-full h-[360px] sm:h-[480px] lg:h-[540px] bg-[#0A0D10] border border-[#232A32] rounded overflow-hidden cursor-grab active:cursor-grabbing select-none"
             >
               <svg viewBox={`0 0 ${canvasWidth} ${canvasHeight}`} className="w-full h-full">
                 <defs>
