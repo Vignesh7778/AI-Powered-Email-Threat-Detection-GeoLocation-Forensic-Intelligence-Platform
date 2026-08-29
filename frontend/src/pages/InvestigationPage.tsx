@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useTransition } from 'react';
 import {
   MapPin, Share2, FileText, AlertTriangle, ArrowLeft, Download,
-  GitCommit, Copy, Check, Lock, RefreshCw, Cpu, Paperclip,
+  GitCommit, Copy, Check, Lock, RefreshCw, Paperclip,
   Link2, Globe, FileSearch, ShieldCheck, Gauge, Sparkles, HelpCircle,
   ExternalLink, Server, Hash, ShieldAlert
 } from 'lucide-react';
@@ -145,7 +145,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
         <RefreshCw className="w-7 h-7 text-[#E8A33D] animate-spin" />
         <div className="space-y-1 font-mono">
           <div className="text-sm font-semibold text-[#E7EBEF]">Decoding Multi-Stage Forensic Ingestion...</div>
-          <div className="text-xs text-[#8B96A3]">Resolving live DNS TXT, GeoIP ASN, and Groq evidence grounding...</div>
+          <div className="text-xs text-[#8B96A3]">Resolving live DNS TXT, GeoIP ASN, and threat indicators...</div>
         </div>
       </div>
     );
@@ -173,7 +173,6 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
   const auth = assessment.auth_results || { spf: 'none', dkim: 'none', dmarc: 'none', alignment_ok: false };
   const domain = assessment.domain_intel;
   const hops = assessment.relay_path || [];
-  const groq = assessment.groq_analysis;
   const scorePercent = Math.round(assessment.fraud_score * 100);
 
   // Relay Hop Nodes
@@ -225,8 +224,6 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
     });
   }
 
-
-
   // Chain of Custody Nodes
   const custodyNodes: CustodyNode[] = [
     {
@@ -249,7 +246,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
     },
     {
       id: 'custody-3',
-      label: '3. Deterministic NLP & BEC Scoring',
+      label: '3. Deterministic NLP & Threat Scoring',
       subLabel: `Model Score: ${assessment.fraud_score.toFixed(2)} (${assessment.risk_level.toUpperCase()})`,
       type: 'evidence',
       tier: 'prediction',
@@ -258,16 +255,15 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
     },
     {
       id: 'custody-4',
-      label: '4. Groq LPU Evidence Grounding',
-      subLabel: groq ? 'Evidence-Grounded Inferences' : 'AI Reasoning Verified',
+      label: '4. Relational Attribution & Incident Graph',
+      subLabel: 'Connected Indicators & Incident Topology',
       type: 'evidence',
-      tier: 'inference',
+      tier: 'prediction',
       hashLink: `sha256:${(submission?.sha256_hash || submissionId).slice(24, 40)}`,
-      detail: 'Contextual synthesis isolating observed evidence citations from probabilistic inferences.'
+      detail: 'Correlating shared infrastructure, sender domains, and campaign indicators.'
     }
   ];
 
-  // 11 Forensic Tabs
   const tabs = [
     { id: 'overview', label: 'Overview', icon: FileSearch },
     { id: 'headers', label: 'Headers', icon: FileText },
@@ -277,7 +273,6 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
     { id: 'domain', label: 'Domain Intel', icon: Globe },
     { id: 'urls', label: 'URLs & Links', icon: Link2 },
     { id: 'attachments', label: 'Attachments', icon: Paperclip },
-    { id: 'ai', label: 'AI Assessment', icon: Cpu },
     { id: 'attribution', label: 'Attribution Graph', icon: Share2 },
     { id: 'custody', label: 'Chain of Custody', icon: Lock }
   ];
@@ -288,7 +283,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
       <TrustLedger
         verifiedCount={auth.spf === 'pass' && auth.dmarc === 'pass' ? 16 : 14}
         predictedCount={3}
-        inferredCount={groq ? 2 : 1}
+        inferredCount={1}
         unknownCount={auth.dkim === 'none' ? 2 : 1}
       />
 
@@ -344,7 +339,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
             onClick={handleRefresh}
             disabled={refreshing}
             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded bg-[#0A0D10] border border-[#232A32] text-xs text-[#8B96A3] hover:text-[#E8A33D] hover:border-[#E8A33D40] disabled:opacity-50 transition-colors min-h-[36px]"
-            title="Re-query live DNS, GeoIP, and Groq telemetry"
+            title="Re-query live DNS, GeoIP, and threat telemetry"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#E8A33D]' : ''}`} />
             <span className="hidden xs:inline">{refreshing ? 'Re-Querying...' : 'Re-Query'}</span>
@@ -708,63 +703,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
           </div>
         )}
 
-        {/* TAB 9: AI ASSESSMENT */}
-        {activeTab === 'ai' && (
-          <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-[#232A32] pb-3">
-                <div>
-                  <h3 className="text-xs uppercase font-bold text-[#E7EBEF]">Groq AI Evidence-Grounded Reasoning Layer</h3>
-                  <p className="text-[11px] text-[#8B96A3] font-sans">Separation of observed evidence, model predictions, and LLM inferences with clickable citations</p>
-                </div>
-                <ThreatBadge type="trust" value="llm_inference" size="xs" />
-              </div>
-
-              {groq ? (
-                <div className="space-y-4">
-                  <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border-l-4 border-l-[#8B8FE8] border-y border-r border-[#232A32] space-y-2">
-                    <div className="text-[10px] uppercase font-bold text-[#8B8FE8]">Executive Summary & Assessment:</div>
-                    <p className="text-[#E7EBEF] text-xs font-sans leading-relaxed">{groq.assessment}</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-2">
-                      <div className="text-[11px] font-bold text-[#2DD4BF] uppercase">Observed Facts Citing Proof:</div>
-                      <div className="space-y-1.5 text-[11px]">
-                        {groq.observations?.map((obs, i) => (
-                          <div key={i} className="text-[#E7EBEF]">
-                            • {obs.fact}{' '}
-                            <button
-                              onClick={() => openDomainDrawer(domain?.sender_domain || 'paypa1.com', true)}
-                              className="text-[#8B8FE8] hover:underline"
-                            >
-                              [{obs.evidence_ref}]
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 sm:p-4 rounded bg-[#0A0D10] border border-[#232A32] space-y-2">
-                      <div className="text-[11px] font-bold text-[#8B8FE8] uppercase">Probabilistic Inferences:</div>
-                      <div className="space-y-1.5 text-[11px]">
-                        {groq.inferences?.map((inf, i) => (
-                          <div key={i} className="text-[#E7EBEF]">• {inf.inference} (Confidence: {Math.round(inf.confidence * 100)}%)</div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-8 sm:p-12 text-center text-[#8B96A3] text-xs">
-                  Groq reasoning initialized and grounded in evidence.
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 10: ATTRIBUTION GRAPH */}
+        {/* TAB 9: ATTRIBUTION GRAPH */}
         {activeTab === 'attribution' && (
           <div className="space-y-4 font-mono text-xs">
             <div className="bg-[#12161B] rounded-lg border border-[#232A32] p-4 sm:p-5 space-y-3">
