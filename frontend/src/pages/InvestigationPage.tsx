@@ -45,12 +45,10 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
     setLoading(true);
     setError(null);
     try {
-      const [ass, sub] = await Promise.all([
-        api.getAssessment(submissionId),
-        api.getSubmission(submissionId)
-      ]);
-      setAssessment(ass);
+      const sub = await api.getSubmission(submissionId);
+      const ass = (await api.getAssessment(submissionId).catch(() => null)) || sub?.assessment || null;
       setSubmission(sub);
+      setAssessment(ass);
     } catch (err: any) {
       setError(err?.message || 'Failed to load forensic assessment data.');
     } finally {
