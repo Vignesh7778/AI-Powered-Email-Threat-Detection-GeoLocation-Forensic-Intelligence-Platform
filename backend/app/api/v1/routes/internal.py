@@ -43,3 +43,33 @@ def receive_fraud_webhook(
         ass_record.raw_assessment = assessment.model_dump()
     db.commit()
     return
+
+@router.get("/health", tags=["System Status"])
+def check_system_health(db: Session = Depends(get_db)):
+    from backend.app.models.models import Submission, Case, Alert, Campaign, User
+    from backend.app.core.database import engine
+    
+    sub_count = db.query(Submission).count()
+    case_count = db.query(Case).count()
+    alert_count = db.query(Alert).count()
+    camp_count = db.query(Campaign).count()
+    user_count = db.query(User).count()
+    
+    db_type = "PostgreSQL" if "postgresql" in str(engine.url) else "SQLite"
+    return {
+        "status": "healthy",
+        "database": db_type,
+        "counts": {
+            "submissions": sub_count,
+            "cases": case_count,
+            "alerts": alert_count,
+            "campaigns": camp_count,
+            "users": user_count
+        }
+    }
+
+@router.post("/seed", tags=["System Status"])
+def force_seed_database(db: Session = Depends(get_db)):
+    from backend.app.core.seeder import seed_database_if_empty
+    seed_database_if_empty(db, force=True)
+    return check_system_health(db)

@@ -183,20 +183,25 @@ def list_emails(
     tenant_id: Optional[str] = None,
     risk_level: Optional[str] = None,
     classification: Optional[str] = None,
-    page: int = Query(1, ge=1),
-    page_size: int = Query(25, ge=1, le=100),
-    limit: Optional[int] = Query(None),
+    page: int = 1,
+    page_size: int = 25,
+    limit: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
-    if limit is not None:
-        page_size = max(1, min(limit, 100))
+    effective_limit = limit if (limit is not None and isinstance(limit, int)) else page_size
+    if isinstance(effective_limit, int):
+        effective_limit = max(1, min(effective_limit, 100))
+    else:
+        effective_limit = 25
+
+    effective_page = page if (isinstance(page, int) and page >= 1) else 1
 
     query = db.query(Submission)
     if tenant_id:
         query = query.filter(Submission.tenant_id == tenant_id)
 
     total = query.count()
-    submissions = query.order_by(Submission.ingested_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    submissions = query.order_by(Submission.ingested_at.desc()).offset((effective_page - 1) * effective_limit).limit(effective_limit).all()
 
     results: List[EmailListItem] = []
     for s in submissions:

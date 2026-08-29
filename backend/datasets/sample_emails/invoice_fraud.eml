@@ -1,0 +1,18 @@
+Received: from server12.cloud-mail.net (server12.cloud-mail.net [198.51.100.24])
+    by corporate.inbox.org with ESMTP id INV555;
+    Fri, 28 Aug 2026 12:00:00 +0000
+Authentication-Results: corporate.inbox.org; spf=softfail; dkim=none; dmarc=fail
+From: "QuickBooks Billing Service" <invoicing@corporate-billing-updates.xyz>
+To: ap@targetorg.gov
+Subject: Overdue Invoice Attached: PO #83921 - Action Required
+Message-ID: <inv-fake-123@corporate-billing-updates.xyz>
+Return-Path: <invoicing@corporate-billing-updates.xyz>
+Date: Fri, 28 Aug 2026 12:00:00 +0000
+Content-Type: text/plain; charset="utf-8"
+
+Please find the attached invoice #83921 for services rendered in August 2026.
+There is an outstanding balance of ,320.00 that is past due.
+
+Remit payment to our updated bank details within 48 hours to avoid service interruption and late penalties.
+
+Attached file: invoice_details_PO83921.pdf

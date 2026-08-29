@@ -1,0 +1,20 @@
+Received: from host-relay.ro (host-relay.ro [203.0.113.42])
+    by mailgate.company.org with ESMTP id IMP333;
+    Fri, 28 Aug 2026 11:20:00 +0000
+Authentication-Results: mailgate.company.org; spf=fail smtp.mailfrom=paypa1.com; dkim=none; dmarc=fail
+From: "PayPal Billing Department" <billing-notice@paypa1.com>
+Reply-To: support@paypa1.com
+To: accounts@company.org
+Subject: Important Notice: Account Statement Invoice #84920
+Message-ID: <imp-msg-882@paypa1.com>
+Return-Path: <noreply@paypa1.com>
+Date: Fri, 28 Aug 2026 11:20:00 +0000
+Content-Type: text/html; charset="utf-8"
+
+<html>
+<body>
+<h2>PayPal Order Confirmation</h2>
+<p>You sent a payment of .00 USD to Digital Goods Global.</p>
+<p>If you did not make this transaction, dispute this invoice immediately: <a href="http://paypa1.com/dispute/resolve">Review Transaction Details</a></p>
+</body>
+</html>

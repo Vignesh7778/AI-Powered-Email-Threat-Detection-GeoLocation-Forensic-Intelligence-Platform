@@ -72,8 +72,21 @@ else:
         if not db_url.startswith("sqlite"):
             logger.info("🛡️ Successfully connected to Supabase PostgreSQL database!")
     except Exception as e:
-        logger.warning(f"Could not connect to database ({e}). Falling back to SQLite.")
-        engine = build_engine(fallback_sqlite)
+        logger.warning(f"Could not connect with primary driver ({e}). Testing pg8000 fallback driver...")
+        if db_url.startswith("postgresql://"):
+            try:
+                pg8000_url = db_url.replace("postgresql://", "postgresql+pg8000://", 1)
+                test_engine = build_engine(pg8000_url)
+                with test_engine.connect() as conn:
+                    pass
+                engine = test_engine
+                logger.info("🛡️ Successfully connected to Supabase PostgreSQL using pg8000 driver!")
+            except Exception as e2:
+                logger.warning(f"pg8000 connection also failed ({e2}). Falling back to SQLite.")
+                engine = build_engine(fallback_sqlite)
+        else:
+            logger.warning(f"Could not connect to database ({e}). Falling back to SQLite.")
+            engine = build_engine(fallback_sqlite)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -82,6 +95,12 @@ def init_db():
     try:
         from backend.app.models import models
         Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        try:
+            from backend.app.core.seeder import seed_database_if_empty
+            seed_database_if_empty(db)
+        finally:
+            db.close()
     except Exception as e:
         logger.error(f"Error initializing DB tables: {e}")
 
@@ -90,6 +109,11 @@ init_db()
 
 def get_db():
     db = SessionLocal()
+    try:
+        from backend.app.core.seeder import seed_database_if_empty
+        seed_database_if_empty(db)
+    except Exception:
+        pass
     try:
         yield db
     finally:

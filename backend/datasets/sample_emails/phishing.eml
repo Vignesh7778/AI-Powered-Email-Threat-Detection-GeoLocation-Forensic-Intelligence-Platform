@@ -1,0 +1,21 @@
+Received: from unknown-host.net (unknown-host.net [185.220.101.5])
+    by gateway.company.org with SMTP id PHISH999;
+    Fri, 28 Aug 2026 09:15:00 +0000
+Authentication-Results: gateway.company.org; spf=fail smtp.mailfrom=secure-paypal-login.xyz; dkim=none; dmarc=fail
+From: "PayPal Account Security" <service@secure-paypal-login.xyz>
+Reply-To: security-alert@secure-paypal-login.xyz
+To: victim@company.org
+Subject: URGENT: Your PayPal Account Has Been Suspended!
+Message-ID: <phish-9912@attacker.net>
+Return-Path: <bounce@secure-paypal-login.xyz>
+Date: Fri, 28 Aug 2026 09:15:00 +0000
+Content-Type: text/html; charset="utf-8"
+
+<html>
+<body>
+<p>Dear Customer,</p>
+<p><b>ACTION REQUIRED:</b> We detected unauthorized sign-in attempts on your account. Your account will be suspended within 24 hours unless you re-authenticate immediately.</p>
+<p>Please <a href="http://198.51.100.24/auth/paypal-login.php">Click Here to Verify Your Account Credentials</a> now.</p>
+<p>Thank you,<br/>PayPal Support</p>
+</body>
+</html>

@@ -1,0 +1,19 @@
+Received: from mail-relay.google.com (mail-relay.google.com [209.85.220.41])
+    by mx.company.org with ESMTP id ABC123XYZ;
+    Fri, 28 Aug 2026 08:30:00 +0000
+Authentication-Results: mx.company.org; spf=pass smtp.mailfrom=google.com; dkim=pass header.d=google.com; dmarc=pass
+From: Google Security Team <no-reply@google.com>
+To: analyst@org.gov
+Subject: Security Notification: New sign-in on Windows Device
+Message-ID: <legit-msg-001@google.com>
+Return-Path: <no-reply@google.com>
+Date: Fri, 28 Aug 2026 08:30:00 +0000
+Content-Type: text/plain; charset="utf-8"
+
+Hi Analyst,
+
+Your Google Account was just accessed from a new Windows device in New Delhi, India.
+If this was you, no further action is needed. You can review your active devices at https://myaccount.google.com/device-activity anytime.
+
+Best regards,
+Google Account Protection Team
