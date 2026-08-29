@@ -323,7 +323,7 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
     {
       id: 'custody-3',
       label: '3. Deterministic NLP & Threat Scoring',
-      subLabel: `Model Score: ${activeAssessment.fraud_score.toFixed(2)} (${activeAssessment.risk_level.toUpperCase()})`,
+      subLabel: `Model Score: ${((activeAssessment.fraud_score ?? (activeAssessment as any).overall_score ?? 0)).toFixed(2)} (${(activeAssessment.risk_level || 'UNKNOWN').toUpperCase()})`,
       type: 'evidence',
       tier: 'prediction',
       hashLink: `sha256:${(submission?.sha256_hash || submissionId).slice(16, 32)}`,
@@ -460,9 +460,9 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
                   breakdown={{
                     auth: auth.dmarc === 'pass' ? 10 : 85,
                     domain: (domain?.domain_age_days ?? 999) < 30 ? 90 : 20,
-                    content: activeAssessment.indicators?.some(i => i.type.includes('urgency') || i.type.includes('bec')) ? 80 : 20,
+                    content: activeAssessment.indicators?.some((i: any) => (typeof i === 'string' ? (String(i).toLowerCase().includes('urgency') || String(i).toLowerCase().includes('bec')) : (i.type?.includes('urgency') || i.type?.includes('bec')))) ? 80 : 20,
                     infra: origin?.infra_flags?.length ? 75 : 15,
-                    links: activeAssessment.indicators?.some(i => i.type.includes('link')) ? 70 : 15
+                    links: activeAssessment.indicators?.some((i: any) => (typeof i === 'string' ? String(i).toLowerCase().includes('link') : i.type?.includes('link'))) ? 70 : 15
                   }}
                   onWhyClick={() => handleTabChange('headers')}
                 />
@@ -480,26 +480,31 @@ export const InvestigationPage: React.FC<InvestigationPageProps> = ({ submission
 
                 <div className="divide-y divide-[#232A32] font-mono text-xs flex-1 max-h-96 overflow-y-auto">
                   {activeAssessment.indicators && activeAssessment.indicators.length > 0 ? (
-                    activeAssessment.indicators.map((ind, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => openDomainDrawer(domain?.sender_domain || 'paypa1.com', true)}
-                        className="p-3.5 flex items-start justify-between gap-3 sm:gap-4 hover:bg-[#191F26] cursor-pointer transition-colors"
-                      >
-                        <div className="space-y-1 flex-1 min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-[#0A0D10] text-[#E8A33D] border border-[#E8A33D30] text-[10px] font-bold uppercase">
-                              {ind.type.replace(/_/g, ' ')}
-                            </span>
-                            <span className="text-[11px] text-[#8B96A3]">Weight: {ind.weight.toFixed(2)}</span>
+                    activeAssessment.indicators.map((ind: any, idx: number) => {
+                      const indType = typeof ind === 'string' ? ind : (ind?.type || ind?.indicator || 'INDICATOR');
+                      const indWeight = typeof ind === 'object' && ind?.weight !== undefined ? Number(ind.weight).toFixed(2) : '0.85';
+                      const indDetail = typeof ind === 'object' ? (ind?.detail || ind?.reason || ind?.value || indType) : ind;
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => openDomainDrawer(domain?.sender_domain || 'paypa1.com', true)}
+                          className="p-3.5 flex items-start justify-between gap-3 sm:gap-4 hover:bg-[#191F26] cursor-pointer transition-colors"
+                        >
+                          <div className="space-y-1 flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="px-2 py-0.5 rounded bg-[#0A0D10] text-[#E8A33D] border border-[#E8A33D30] text-[10px] font-bold uppercase">
+                                {String(indType).replace(/_/g, ' ')}
+                              </span>
+                              <span className="text-[11px] text-[#8B96A3]">Weight: {indWeight}</span>
+                            </div>
+                            <p className="text-[#E7EBEF] text-xs font-sans mt-0.5">{indDetail}</p>
                           </div>
-                          <p className="text-[#E7EBEF] text-xs font-sans mt-0.5">{ind.detail}</p>
+                          <span className="text-[10px] text-[#E8A33D] hover:underline flex-shrink-0">
+                            Inspect →
+                          </span>
                         </div>
-                        <span className="text-[10px] text-[#E8A33D] hover:underline flex-shrink-0">
-                          Inspect →
-                        </span>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <div className="p-8 sm:p-12 text-center text-[#8B96A3] text-xs">
                       No high-risk threat indicators observed. Message matches authentic parameters.
