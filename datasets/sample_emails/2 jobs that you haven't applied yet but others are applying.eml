@@ -1,0 +1,571 @@
+Delivered-To: barathkumarrk3010@gmail.com
+Received: by 2002:a17:505:e368:b0:1e7d:ecae:543b with SMTP id sg8csp657107njc;
+        Fri, 28 Aug 2026 23:24:40 -0700 (PDT)
+X-Received: by 2002:a17:90a:da83:b0:398:9be8:ea6a with SMTP id 98e67ed59e1d1-3989be8eac9mr6743334a91.23.1787984679881;
+        Fri, 28 Aug 2026 23:24:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1787984679; cv=none;
+        d=google.com; s=arc-20260327;
+        b=H0LqO3VF/HRQOKxwseluq2LtCkp8PA0DYkQIGiTutz8NFCAajAwSFl0rVzrLX9zTD8
+         XCFmh2CPCoogQscn1HI5T1tfzCWr1OMn/JGOGwuDlgG7y4XADsKnF2UnFf37cVYMYcXD
+         okjleNXOA33lJhpOFx7pjTY5ze0n6vLRGQ3+V4Mw+PqY42kocH1lHk4nASXUZGi8rBDk
+         zLsMvQt1Udv1ogeNrifCsezKVuLAtpFMbW3QBVrvSveBFhwLDltzuDXs6UMTgdHtIcb5
+         wvcdO43lVEBDxi5W0UnZ4GRiUQkjw9xTecRwIjDOwpiHpEnaEQLnB+QQt1tCNNVF1F83
+         hC0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=mime-version:subject:message-id:to:from:date:dkim-signature
+         :dkim-filter;
+        bh=Ph0zoa8epmY+0ZpAzPWqX0Gi02O4x45iuvxuo5hiMTw=;
+        fh=mv8PwNUInxd9Xwe76XBjKQ4VmQplF/LBVhw7cNhPA7k=;
+        b=LgvjV1yKKW87Lz8yqTeSKYu7HTpxAkn3d40HfP/RSed77prORyrFAW+SRPkp7MFo9D
+         i4SWAJnfEFmVWfTHADcnbfEJF/GKsH/O9jnbJkFLTpx89Ku2KmGnU5OpOgNuITD4G8sQ
+         4nQ93+ZH+MI2HvtyFqRkTlnwY80dYEcVXmoZjZhoo3pZJmGzk+LHTXG93KN4tWnGzTKi
+         vIh0MIQPFrBT+4qySQfD8oPXZMSMsQCo5fDrehqd9a8D2rYpKnBh5MvAUGbvjo+CQLRo
+         0gCh/c+dj0+nSw1CtymyR85QfnbJA2p0Drrn5H1uqasV3pSlGkUePf+LTcU8iXjkHosW
+         Bisg==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@monsterindia.com header.s=default header.b=uAk6Vjxw;
+       spf=pass (google.com: domain of jobmessenger@monsterindia.com designates 40.80.88.151 as permitted sender) smtp.mailfrom=jobmessenger@monsterindia.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=monsterindia.com
+Return-Path: <jobmessenger@monsterindia.com>
+Received: from alerts11.monsterindia.com (alerts11.monsterindia.com. [40.80.88.151])
+        by mx.google.com with ESMTPS id a92af1059eb24-142e09fc0ccsi8437600c88.26.2026.08.28.23.24.39
+        for <barathkumarrk3010@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 Aug 2026 23:24:39 -0700 (PDT)
+Received-SPF: pass (google.com: domain of jobmessenger@monsterindia.com designates 40.80.88.151 as permitted sender) client-ip=40.80.88.151;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@monsterindia.com header.s=default header.b=uAk6Vjxw;
+       spf=pass (google.com: domain of jobmessenger@monsterindia.com designates 40.80.88.151 as permitted sender) smtp.mailfrom=jobmessenger@monsterindia.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=monsterindia.com
+Received: from jr-consumer-postprocessor-prod-f9658949b-rt8q8 (unknown [172.28.194.162])
+	by alerts11.monsterindia.com (Postfix) with ESMTPA id 43317988E3
+	for <barathkumarrk3010@gmail.com>; Sat, 29 Aug 2026 11:54:38 +0530 (IST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alerts11.monsterindia.com 43317988E3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monsterindia.com;
+	s=default; t=1787984678;
+	bh=Ph0zoa8epmY+0ZpAzPWqX0Gi02O4x45iuvxuo5hiMTw=;
+	h=Date:From:To:Subject:From;
+	b=uAk6VjxwrO10mMcFY5NYZOqq8GJPInp48SlDnZ1RZzXy28MlTxL6qyNDs1q5impjy
+	 WRJmJDM3RPTnTGqNcLQA/d36z6HlZymGkNFakcrb6lCGrToi1gNEn1+6OLT+7cP1pT
+	 mn2jCeryAKGXd5Y3x5Hu+bzN6OSQmsnXDh7994EQ=
+Date: Sat, 29 Aug 2026 11:54:38 +0530 (IST)
+From: Amaira from foundit <jobmessenger@monsterindia.com>
+To: barathkumarrk3010@gmail.com
+Message-ID: <188898093.263162.1787984678273@jr-consumer-postprocessor-prod-f9658949b-rt8q8>
+Subject: 2 jobs that you haven't applied yet but others are applying
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_263161_893856853.1787984678251"
+
+------=_Part_263161_893856853.1787984678251
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html>
+<html>
+<head>
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1.=
+0">
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"/>
+<link href=3D"https://fonts.googleapis.com/css2?family=3DNoto+Sans:wght@400=
+;700&display=3Dswap" rel=3D"stylesheet">
+<title>Mailer</title>
+  <style>
+    @import url(http://fonts.googleapis.com/css?family=3DNoto+Sans:400,700)=
+;
+    @import url(https://fonts.googleapis.com/css2?family=3DNoto+Sans:wght@4=
+00;700);
+    body {
+      padding: 0;
+      font-family: 'Noto Sans', sans-serif;
+      margin: 0;
+      min-width: 100%;
+      background: #f9faff !important;
+      color: #1d1e1f
+    }
+    .only-desktop {
+      display: block !important;
+      padding: 0 24px
+    }
+
+    .only-mobile {
+      display: none !important
+    }
+
+    @media only screen and (max-width:480px) {
+      .only-desktop {
+        display: none !important
+      }
+    }
+
+    @media only screen and (min-width:600px) {
+      .mobile,
+      .only-desktop {
+        display: block !important;
+        padding: 0 24px
+      }
+      .only-mobile {
+        display: none !important
+      }
+    }
+
+    @media only screen and (max-width:600px) {
+      .only-desktop {
+        display: none !important
+      }
+      .only-mobile {
+        display: table !important;
+        margin: 0 auto !important;
+        width: 100%
+      }
+    }
+  </style>
+</head><body><table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpaddi=
+ng=3D"0" style=3D"background:#fafafa;" bgcolor=3D"#fafafa">
+<tbody><tr class=3D"c-1syf3pb"style=3D"border: 0 none; border-collapse: col=
+lapse; height: 1px;">
+<td style=3D"border: 0 none; border-collapse: collapse; vertical-align: mid=
+dle; display:none" valign=3D"middle">
+<img src=3D"https://apiv2.monsterindia.com/penguin/api/public/notification/=
+v1/userActive.jpg?notificationId=3Deada28af-c59f-4c86-8495-984ac08a2457&amp=
+;id=3DUG1VcHJKUTM0ZkdwNkdhQmNOT3laUW9BSUh0T1ZtLzhqaDFDNFZIKythcFlubU1kQ2xPY=
+y9UaEtzQktmRElkaWEwS2xudWxYajRRTjF2aTRiMXk0UU1zU2YvdHFleWw1NzkwYmx1WXNld210=
+NTZhQk16NGhZS3FLSGRzRjYrQXVQdys3YkYxS2hIamY4bzMrejY5a3hOMnFsRXJGZEZKL2VWQkt=
+MQ0lzWmtwK1hYa2NOaXJNZVpRMDRqempOTDAvNVloN1hYdVNKTUU5cGtxOUl6a0NxWWdWNVlwZk=
+xSM1hSK3BkSDc5eGdmY3c1MGM0VkpLM1hGaTZ4cFYzeEdrQngzNVBDSGJGVUN6eHF5T2dpSGYzS=
+2c9PQ=3D=3D" alt=3D"userActive"></td>
+</tr>
+<tr>
+<td><table width=3D"600" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" a=
+lign=3D"center" style=3D"padding:0;font-family:'Noto Sans',sans-serif;table=
+-layout:fixed;width:100%;max-width:600px!important;table-layout:fixed;borde=
+r:1px solid #ccc">
+<tr><td style=3D"padding: 8px 11px;"><table cellpadding=3D"0" cellspacing=
+=3D"0" border=3D"0" role=3D"presentation" width=3D"100%">
+<tr><p style=3D"display: none;">2 new jobs from Cognizant Consulting<span>,=
+ Talent HR Networks Private Limited</span> and more </p>
+</tr>
+<tr><td valign=3D"middle"><a href=3D"https://www.foundit.in/" aria-label=3D=
+"foundit" style=3D"display: inline-block;text-decoration: none; cursor: poi=
+nter;">
+<img src=3D"https://media.monsterindia.com/prod-cdn/email/images/band-logo.=
+png" width=3D"78" style=3D"max-width: initial; width: 78px; display: block"=
+ />
+</a></td>
+<td ><table style=3D"padding:8px 12px" width=3D"175" border=3D"0" align=3D"=
+right" cellpadding=3D"0" cellspacing=3D"0">
+<tr><td>
+<table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0">
+<tr><td><table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"pre=
+sentation" width=3D"100%">
+<tr>
+<td height=3D"28" style=3D"font-size:14px;font-weight:400;color:#000;text-a=
+lign:center;line-height:14px">Get the app</td>
+</tr></table></td>
+<td><table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"present=
+ation" width=3D"100%"><tr><td width=3D"28" height=3D"28" align=3D"center" v=
+align=3D"middle">
+<table  width=3D"25" border=3D"0" align=3D"center" cellpadding=3D"0" cellsp=
+acing=3D"0"><tr>
+<td align=3D"center">
+<a href=3D"https://play.google.com/store/apps/details?id=3Dcom.monsterindia=
+.seeker.views" target=3D"_blank">
+<img src=3D"https://media.monsterindia.com/prod-cdn/email/images/prep-googl=
+e-app.png" width=3D"18" height=3D"18" style=3D"width: 18px; height: 18px; d=
+isplay: block" /></a>
+</td></tr></table></td>
+<td width=3D"28" height=3D"28" align=3D"center" valign=3D"middle">
+<table width=3D"24" border=3D"0" align=3D"center" cellpadding=3D"0" cellspa=
+cing=3D"0">
+<tr>
+<td align=3D"center"><a href=3D"https://itunes.apple.com/in/app/monster-job=
+s/id525775161?mt=3D8" target=3D"_blank">
+<img src=3D"https://media.monsterindia.com/prod-cdn/email/images/prep-apple=
+-app.png" width=3D"18" height=3D"18" style=3D"width: 18px; height: 18px; di=
+splay: block" /></a>
+</td></tr></table></td>
+</tr></table></td></tr></table></td></tr></table></td></tr></table></td></t=
+r>
+
+<!-- Welcome Section -->
+<tr>
+<td style=3D"padding: 16px; background-color: #fff ;"><table width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0"><tbody><tr>
+<td style=3D"font-size:20px;padding-bottom:8px;font-weight: 700;" >Top jobs=
+ matching your profile=F0=9F=94=A5</td></tr><tr>
+<td style=3D"font-size:14px;line-height:24px;width:100%!important;height:au=
+to!important;display:table!important">Hi BARATH R K, we=E2=80=99ve curated =
+job opportunities where you=E2=80=99d be a top applicant, based on your pro=
+file and preferences.
+</td></tr>
+<tr><td  style=3D"padding-top: 8px;width:100%!important;height:auto!importa=
+nt;display:table!important"><a href=3D"https://www.foundit.in/rio/autoLogin=
+/seeker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUt=
+tbWRKT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNl=
+k5VjZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttps%3A%2F%2Fwww.foundit.in%=
+2Fseeker%2Fdashboard%3Futm_source%3Dmlrecommendedjobs%26utm_medium%3Demail%=
+26utm_term%3Dengagement%26notification_frequency%3Ddaily%26utm_campaign%3Dm=
+lJRExperiment_DEFAULT%26utm_content%3Dview_all_jobs" style=3D"color:#6e00be=
+;font-size:14px; text-decoration: none;">View all Jobs &#8594;</a></td>
+</tr></tbody></table></td></tr>
+<!-- Jobs Section -->
+<tr><td style=3D"padding: 16px; background-color: #fafafa;"><table width=3D=
+"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0"> <tbody>
+<tr><td style=3D"padding-bottom: 12px;"><table  width=3D"100%" border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0"bgcolor=3D"white" style=3D"border-radiu=
+s:8px;background-color:#fff;padding:16px;border-spacing:0;width:100%" role=
+=3D"presentation"><tbody>
+<tr><td style=3D"width:100%!important;height:auto!important;display:table!i=
+mportant"><table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" ><tbody>
+<tr><td colspan=3D"2" align=3D"left"  valign=3D"top" ><table width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0"><tbody>
+<tr><td style=3D"width:10%;padding-right:12px" valign=3D"top"><img src=3D"h=
+ttps://media.monsterindia.com/logos/xOP_cognconsinx1774549385203/jdlogo.gif=
+" width=3D"64" height=3D"64" style=3D"width: 44px; height: 44px; display:bl=
+ock;border:1px solid #e8e8eb;border-radius:4px"/></td><td style=3D"width: 9=
+0%;" ><table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+">
+<tbody><tr><td><a style=3D"text-decoration: none;cursor: pointer;" href=3D"=
+https://www.foundit.in/rio/autoLogin/seeker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZ=
+BSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRKT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMl=
+dkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5VjZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return=
+_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Fjob%2F56591941%3Fspl%3Dmonsterindia_m=
+lrecommendedjobs_daily_Job1_29%2F08%2F2026_aedf102d-a56d-48af-92d2-60a88049=
+15f2_email%26utm_source%3Dmlrecommendedjobs%26utm_content%3Djob_description=
+%26notification_frequency%3Ddaily%26utm_medium%3Demail%26utm_campaign%3DmlJ=
+RExperiment_DEFAULT%26utm_term%3Dengagement"> <p style=3D"font-size: 16px;l=
+ine-height: 24px;max-width: calc(50ch + 1px);color: #17142a;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-weight: 700;">Cyber Security Specialist</p></a></td></tr><tr>
+<td><p style=3D"font-size: 14px;max-width: calc(20ch + 1px);line-height: 20=
+px;    color: #17142a;
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;">Cognizant Consulting</p></td></tr><tr><td>
+<p style=3D"font-size: 14px;max-width: calc(20ch + 1px);line-height: 20px; =
+   color: #17142a;
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;">Chennai</p></td></tr></tbody></table></td></tr></tbody></ta=
+ble></td></tr>
+<tr><td colspan=3D"2" align=3D"right" valign=3D"top" style=3D"padding-top:1=
+2px;padding-bottom:0;margin-bottom:0;line-height:0" ><a href=3D"https://www=
+.foundit.in/rio/autoLogin/seeker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbn=
+RCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRKT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHK=
+zU5WHZtY0xsbHZXOXBoRlZHNlk5VjZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttp=
+s%3A%2F%2Fwww.foundit.in%2Fjob%2F56591941%3FautoApply%3Dtrue%26spl%3Dmonste=
+rindia_mlrecommendedjobs_daily_Job1_29%2F08%2F2026_aedf102d-a56d-48af-92d2-=
+60a8804915f2_email_applylink%26utm_source%3Dmlrecommendedjobs%26utm_content=
+%3Djob_apply%26notification_frequency%3Ddaily%26utm_medium%3Demail%26utm_te=
+rm%3Dengagement%26utm_campaign%3DmlJRExperiment_DEFAULT%26utm_fi%26jr_sourc=
+e%3D" style=3D"display: inline-block; text-decoration: none; cursor: pointe=
+r;">
+<table style=3D"border-radius:4px;background-color:#f1e6f9;height:32px;widt=
+h:120px;padding:8px 12px;text-align:center;border-radius:4px;background-col=
+or:#f1e6f9;height:32px;width:120px;padding:8px 12px;text-align:center"  cel=
+lpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"presentation">
+<tr><td align=3D"center" valign=3D"middle">
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"presentatio=
+n" style=3D"margin: 0; border-spacing: 0"><tr>
+
+<td style=3D"padding-left: 4px;">
+
+<p style=3D"font-size:12px;line-height:16px;color:#6e00be;margin:0;text-ali=
+gn:center;padding:0; font-weight: 700;" >Apply now</p>
+</td></tr></table></td></tr></table></a></td></tr></tbody></table></td></tr=
+></tbody></table></td></tr>
+<tr><td style=3D"padding-bottom: 12px;"><table  width=3D"100%" border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0"bgcolor=3D"white" style=3D"border-radiu=
+s:8px;background-color:#fff;padding:16px;border-spacing:0;width:100%" role=
+=3D"presentation"><tbody>
+<tr><td style=3D"width:100%!important;height:auto!important;display:table!i=
+mportant"><table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" ><tbody>
+<tr><td colspan=3D"2" align=3D"left"  valign=3D"top" ><table width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0"><tbody>
+<tr><td style=3D"width:10%;padding-right:12px" valign=3D"top"><img src=3D"h=
+ttps://media.monsterindia.com/newsletter/prep-ai/default-company.png" width=
+=3D"64" height=3D"64" style=3D"width: 44px; height: 44px; display:block;bor=
+der:1px solid #e8e8eb;border-radius:4px"/></td><td style=3D"width: 90%;" ><=
+table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0">
+<tbody><tr><td><a style=3D"text-decoration: none;cursor: pointer;" href=3D"=
+https://www.foundit.in/rio/autoLogin/seeker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZ=
+BSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRKT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMl=
+dkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5VjZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return=
+_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Fjob%2F56616699%3Fspl%3Dmonsterindia_m=
+lrecommendedjobs_daily_Job2_29%2F08%2F2026_aedf102d-a56d-48af-92d2-60a88049=
+15f2_email%26utm_source%3Dmlrecommendedjobs%26utm_content%3Djob_description=
+%26notification_frequency%3Ddaily%26utm_medium%3Demail%26utm_campaign%3DmlJ=
+RExperiment_DEFAULT%26utm_term%3Dengagement"> <p style=3D"font-size: 16px;l=
+ine-height: 24px;max-width: calc(50ch + 1px);color: #17142a;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    font-weight: 700;">Cyber Security Manager</p></a></td></tr><tr>
+<td><p style=3D"font-size: 14px;max-width: calc(20ch + 1px);line-height: 20=
+px;    color: #17142a;
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;">Talent HR Networks Private Limited</p></td></tr><tr><td>
+<p style=3D"font-size: 14px;max-width: calc(20ch + 1px);line-height: 20px; =
+   color: #17142a;
+    padding: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;">Bengaluru</p></td></tr></tbody></table></td></tr></tbody></=
+table></td></tr>
+<tr><td colspan=3D"2" align=3D"right" valign=3D"top" style=3D"padding-top:1=
+2px;padding-bottom:0;margin-bottom:0;line-height:0" ><a href=3D"https://www=
+.foundit.in/rio/autoLogin/seeker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbn=
+RCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRKT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHK=
+zU5WHZtY0xsbHZXOXBoRlZHNlk5VjZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttp=
+s%3A%2F%2Fwww.foundit.in%2Fjob%2F56616699%3FautoApply%3Dtrue%26spl%3Dmonste=
+rindia_mlrecommendedjobs_daily_Job2_29%2F08%2F2026_aedf102d-a56d-48af-92d2-=
+60a8804915f2_email_applylink%26utm_source%3Dmlrecommendedjobs%26utm_content=
+%3Djob_apply%26notification_frequency%3Ddaily%26utm_medium%3Demail%26utm_te=
+rm%3Dengagement%26utm_campaign%3DmlJRExperiment_DEFAULT%26utm_fi%26jr_sourc=
+e%3D" style=3D"display: inline-block; text-decoration: none; cursor: pointe=
+r;">
+<table style=3D"border-radius:4px;background-color:#f1e6f9;height:32px;widt=
+h:120px;padding:8px 12px;text-align:center;border-radius:4px;background-col=
+or:#f1e6f9;height:32px;width:120px;padding:8px 12px;text-align:center"  cel=
+lpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"presentation">
+<tr><td align=3D"center" valign=3D"middle">
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"presentatio=
+n" style=3D"margin: 0; border-spacing: 0"><tr>
+
+<td style=3D"padding-left: 4px;">
+
+<p style=3D"font-size:12px;line-height:16px;color:#6e00be;margin:0;text-ali=
+gn:center;padding:0; font-weight: 700;" >Apply now</p>
+</td></tr></table></td></tr></table></a></td></tr></tbody></table></td></tr=
+></tbody></table></td></tr>
+<!-- Banner -->
+<tr><td style=3D"border: 0 none; border-collapse: separate; vertical-align:=
+ middle;" valign=3D"middle">
+</td></tr>
+<!-- Feedback Section -->
+<tr><td><table width=3D"100%" border=3D"0" height=3D"48" style=3D"backgroun=
+d:#f1fbf9;height:48px!important;border-radius:8px;line-height:0;margin:12px=
+ 0;padding:0" cellpadding=3D"0" cellspacing=3D"0"><tbody><tr>
+<td width=3D"93%" style=3D"font-weight:500;font-size:12px;color:#17142a;pad=
+ding-left:24px;line-height:0"> <p  style=3D"font-weight:500;font-size:12px;=
+letter-spacing:0;padding:16px 0;margin:0;line-height:16px">How is the searc=
+h relevance?</p></td>
+<td width=3D"7%" style=3D"line-height: 0;
+    padding: 12px 24px 12px 0;
+    margin: 0;"><table height=3D"24" border=3D"0" style=3D"    margin: 0;
+    padding: 0;
+    line-height: 0;
+    height: 24px !important;
+    width: 64px;" cellpadding=3D"0" cellspacing=3D"0" >
+<tbody><tr>
+<td width=3D"50%" align=3D"right" style=3D"padding-right: 16px;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0"> <a href=3D"https://www.foundit.in/rio/autoLogin/see=
+ker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWR=
+KT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5Vj=
+ZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Fse=
+eker%2Fprofile%3Fid%3DOWd0em83bk83dUluTFYyWFQyQ20yVC9DSm1GVFRvV1ZTRW45YWpUQ=
+TdGV3huSFovTjdDZy9LR1dXMUhXZjhScg%3D%3D%26notificationId%3Deada28af-c59f-4c=
+86-8495-984ac08a2457%26response%3Dno%26type%3Dmlrecommendedjobs"><img src=
+=3D"https://media.monsterindia.com/newsletter/JR-NIU007/thumps-up.png" alt=
+=3D"" width=3D"24" height=3D"24" style=3D"padding: 0;
+    margin: 0;
+    line-height: 0;"/></a></td>
+<td width=3D"50%" align=3D"right" style=3D"padding-right: 16px;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0"> <a href=3D"https://www.foundit.in/rio/autoLogin/see=
+ker/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWR=
+KT1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5Vj=
+ZKSk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Fse=
+eker%2Fjobalert-feedback%3Fid%3DOWd0em83bk83dUluTFYyWFQyQ20yVC9DSm1GVFRvV1Z=
+TRW45YWpUQTdGV3huSFovTjdDZy9LR1dXMUhXZjhScg%3D%3D%26notificationId%3Deada28=
+af-c59f-4c86-8495-984ac08a2457%26response%3Dyes%26type%3Dmlrecommendedjobs"=
+><img src=3D"https://media.monsterindia.com/newsletter/JR-NIU007/thumps-dow=
+n.png" alt=3D"" width=3D"24" height=3D"24" style=3D"padding: 0;
+    margin: 0;
+    line-height: 0;"></a></td>
+</tr>
+</tbody></table></td></tr></tbody></table></td>
+</tr>
+<tr><td style=3D"padding-top:16px;padding-bottom:16px"><table border=3D"0" =
+align=3D"center" cellpadding=3D"0" cellspacing=3D"0"><tr>
+<td align=3D"center"><a href=3D"https://www.foundit.in/rio/autoLogin/seeker=
+/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRKT1=
+FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5VjZKS=
+k4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Fseeke=
+r%2Fdashboard%3Futm_source%3Dmlrecommendedjobs%26utm_medium%3Demail%26utm_t=
+erm%3Dengagement%26notification_frequency%3Ddaily%26utm_campaign%3DmlJRExpe=
+riment_DEFAULT%26utm_content%3Dview_all_jobs" style=3D"background-color:#6e=
+00be;font-size:14px;color:#fff!important;padding:12px 74px;border:1px solid=
+ #6e00be;display:inline-block;border-radius:4px;line-height:20px; text-deco=
+ration: none;">View All Jobs</a></td></tr></table></td></tr>
+<tr>
+  <td style=3D"padding-top:12px; padding-bottom:8px;">
+    <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" =
+style=3D"background: #FFF6E5; border-radius: 8px;">
+      <tbody>
+        <tr>
+          <td  style=3D"padding: 12px 0 12px 16px; display:block!important;=
+width:100%!important;">
+            <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpaddin=
+g=3D"0" style=3D"max-width: 400px;">
+              <tbody>
+                <tr>
+                  <td style=3D"font-weight:700;font-size:16px;line-height:2=
+6px;letter-spacing:0">
+                    Your profile was last updated on
+                    <span style=3D"color:#E03923; font-weight: 500;">01/08/=
+2026</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td  style=3D"padding-top: 8px; font-size: 14px;">
+                    Keep it fresh to appear in more recruiter searches.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+
+          <!-- Button Cell -->
+          <td  align=3D"right" style=3D"line-height: 0; display: block !imp=
+ortant;width: 100% !important;text-align: left !important;padding: 0px 0px =
+12px 16px !important;">
+              <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0">
+                <tbody>
+                  <tr>
+                    <td style=3D"display:inline-block;font-size:12px!import=
+ant;padding:16px;font-weight: 400 !important;background-color: #2B244C;colo=
+r: white;border-radius: 24px;">
+                      <a href=3D"https://www.foundit.in/rio/autoLogin/seeke=
+r/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRKT=
+1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5VjZK=
+Sk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Fseek=
+er%2Fprofile%3Futm_source%3Dmlrecommendedjobs%26utm_medium%3Demail%26utm_te=
+rm%3Dengagement%26apop%3Dupdate_profile_email" style=3D"text-decoration: no=
+ne; cursor: pointer;color: white">Update Now</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr></tbody></table></td></tr>
+<!--Footer section-->
+<tr>
+<td  style=3D" font-size:16px; font-weight:400; line-height: 26px; padding-=
+left: 24px; padding-bottom: 8px; background-color: #fff;">
+<span><strong>Team <span style=3D"color:#6E00BE;">foundit</span></strong></=
+span><br>(Formerly Monster APAC & ME)</td></tr>
+<tr><td style=3D"text-align: center; background: #fff; padding-top: 16px;bo=
+rder-bottom:1px solid #e7e7ea" ><table  cellpadding=3D"0" cellspacing=3D"0"=
+ border=3D"0" role=3D"presentation"width=3D"100%" style=3D"padding-bottom: =
+16px; padding-top: 16px; width: 100%; border-spacing: 0;background-color: #=
+fff;border-top: 1px solid #e7e7ea;" >
+<tr class=3D"only-desktop "><td valign=3D"middle" bgcolor=3D"#FFFFFF" style=
+=3D"width: 100%; vertical-align: middle; "><table width=3D"550" border=3D"0=
+" align=3D"center" cellpadding=3D"0" cellspacing=3D"0"><tr>
+<td><table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0">=
+<tr>
+<td><img src=3D"https://media.foundit.in/trex/public/default/images/career-=
+services/prep-ai/jr-footer-text.png" width=3D"348" height=3D"108" style=3D"=
+display:block" />
+<table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0"><tr>
+<td><a href=3D"https://play.google.com/store/apps/details?id=3Dcom.monsteri=
+ndia.seeker.views"><img src=3D"https://media.monsterindia.com/newsletter/17=
+1224_va_v3-134946984_MI/footer-gplay.png" width=3D"167" height=3D"81" style=
+=3D"display:block" /></a></td>
+<td><a href=3D"https://itunes.apple.com/in/app/monster-jobs/id525775161?mt=
+=3D8"><img src=3D"https://media.monsterindia.com/newsletter/171224_va_v3-13=
+4946984_MI/footer-appstore.png" width=3D"181" height=3D"81" style=3D"displa=
+y:block" /></a></td></tr>
+</table></td></tr></table></td>
+<td><img src=3D"https://media.foundit.in/trex/public/default/images/career-=
+services/prep-ai/jr-footer-barcode.png" width=3D"202" height=3D"189" style=
+=3D"display:block" /></td>
+</tr></table></td></tr>
+<tr class=3D"only-mobile"><td><table width=3D"100%" border=3D"0" align=3D"c=
+enter" cellpadding=3D"0" cellspacing=3D"0">
+<tr><td><a href=3D"https://appurl.io/foundit"><img src=3D"https://media.mon=
+sterindia.com/newsletter/171224_va_v3-134946984_MI/mobile-footer.png" width=
+=3D"292" height=3D"250" border=3D"0" /></a></td></tr>
+</table></td></tr><tr>
+<td valign=3D"middle" width=3D"100.00%" style=3D"width: 100%; vertical-alig=
+n: middle"><table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" role=3D"=
+presentation"width=3D"100.00%" style=3D"width: 100%; border-spacing: 0" bgc=
+olor=3D"#f4f4f5"><tr>
+</tr></table></td></tr></table></td></tr>
+<tr>
+<td bgcolor=3D"#F4F4F5" style=3D"padding: 16px;"><table width=3D"100%" bord=
+er=3D"0" cellspacing=3D"0" cellpadding=3D"5">
+<tr><td style=3D" text-align:justify; line-height: 18px!important;font-size=
+:12px;color:#17142a;line-height:14px"> You have received this mail because =
+your e-mail address is registered with <span><a href=3D"https://www.foundit=
+.in" target=3D"_blank" rel=3D"noopener noreferrer"style=3D"font-size:12px;c=
+olor:#17142a;line-height:14px; color:#0D99FF;text-decoration: none;cursor: =
+pointer;"> https://www.foundit.in </a>
+</span> Please do not reply to this mail, as this is a system-generated com=
+munication sent to you based on your job preferences on foundit. We have en=
+abled an auto-login facility for your convenience to ensure that your job s=
+earches and application experience are smoother and faster. We recommend yo=
+u do NOT forward this e-mail to protect your foundit account from unauthori=
+zed access/misuse. Although, foundit has adopted the required feasible meas=
+ures to ensure that the information provided is authentic. However, we stro=
+ngly recommend you verify the authenticity of the information. foundit also=
+ advises users to beware of any fraudulent communication asking for persona=
+l /banking information or seeking money for any job offer. foundit does NOT=
+ authorize any agency/partner to collect any fees for job offers. Report an=
+y such suspicious activity to: <a href=3D"mailto:spam@foundit.in" style=3D"=
+color:#0D99FF">spam@foundit.in</a> or <a href=3D"mailto:info@foundit.in" st=
+yle=3D"color:#0D99FF">info@foundit.in</a>. Please note in no event shall fo=
+undit be liable for any damages whatsoever. We also recommend you visit the=
+ "Terms of Use" and "Privacy Policy" sections of the  foundit website for m=
+ore details<br>  <br>
+Have a question? E-mail at <a href=3D"mailto:info@foundit.in" style=3D"colo=
+r:#0D99FF">info@foundit.in</a><br><br>
+<b>Beware of fake job postings</b> that get listed online from time to time=
+ and ask for your personal information illegally. Do not pay any money to a=
+nyone who promised to find you a job. foundit shall not have any responsibi=
+lity in this regard. <span><a href=3D"mailto:compliance@foundit.in" style=
+=3D"color: #0D99FF; text-decoration: none; cursor: pointer;">Report Fraud</=
+a></span></td></tr>
+<tr><td align=3D"center" style=3D"padding-top:20px;font-size:12px;color:#17=
+142a;line-height:14px"><a href=3D"https://www.foundit.in/rio/autoLogin/seek=
+er/NVJqVWFBRzBxbm9DRlh0LzVmWWhpaEZBSEVXcXdWbnRCQ0Y1SHJ0Y3RVcmFwR0l0bUttbWRK=
+T1FrcitmcjBwSXJ6M1QvQmJGdWYxSDRDMldkaDczWVBHKzU5WHZtY0xsbHZXOXBoRlZHNlk5VjZ=
+KSk4wQ2V6K01kUnFRaVAzcDk=3D?return_url=3Dhttps%3A%2F%2Fwww.foundit.in%2Ftre=
+x%2Funsubscribe%3Futm_source%3Dmlrecommendedjobs%26utm_medium%3Demail%26utm=
+_term%3Dengagement%3Futm_source%3Dmlrecommendedjobs%26utm_medium%3Demail%26=
+utm_term%3Dengagement" style=3D"color: #0D99FF">Unsubscribe</a></td></tr>
+<tr><td align=3D"center" style=3D"font-size:12px;color:#17142a;line-height:=
+14px"> =C2=A92025 All rights reserved </td></tr></table></td></tr>
+</tbody></table>
+</td></tr></table></td></tr></table></td></tr></tbody></table></body></html=
+>
+------=_Part_263161_893856853.1787984678251--
