@@ -28,7 +28,16 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     const update = () => {
       const now = new Date();
-      setTime(now.toUTCString().slice(17, 25) + ' UTC');
+      const timeStr = now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      const tzAbbr = new Intl.DateTimeFormat([], { timeZoneName: 'short' })
+        .formatToParts(now)
+        .find(p => p.type === 'timeZoneName')?.value || '';
+      setTime(`${timeStr} ${tzAbbr}`.trim());
     };
     update();
     const interval = setInterval(update, 1000);
