@@ -73,6 +73,65 @@ export const api = {
     }
   },
 
+  // In-memory & sessionStorage cache for resilient cross-lambda retrieval
+  _detailCache: new Map<string, EmailDetail>(),
+
+  cacheDetail(detail: EmailDetail) {
+    if (!detail || !detail.submission_id) return;
+    this._detailCache.set(detail.submission_id, detail);
+    try {
+      sessionStorage.setItem(`tracex_sub_${detail.submission_id}`, JSON.stringify(detail));
+      const localIds: string[] = JSON.parse(sessionStorage.getItem('tracex_local_subs') || '[]');
+      if (!localIds.includes(detail.submission_id)) {
+        localIds.unshift(detail.submission_id);
+        sessionStorage.setItem('tracex_local_subs', JSON.stringify(localIds.slice(0, 50)));
+      }
+    } catch {}
+  },
+
+  getCachedDetail(submissionId: string): EmailDetail | null {
+    if (this._detailCache.has(submissionId)) {
+      return this._detailCache.get(submissionId)!;
+    }
+    try {
+      const stored = sessionStorage.getItem(`tracex_sub_${submissionId}`);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        this._detailCache.set(submissionId, parsed);
+        return parsed;
+      }
+    } catch {}
+    return null;
+  },
+
+  getLocalCachedSubmissions(): EmailListItem[] {
+    try {
+      const localIds: string[] = JSON.parse(sessionStorage.getItem('tracex_local_subs') || '[]');
+      const items: EmailListItem[] = [];
+      for (const id of localIds) {
+        const det = this.getCachedDetail(id);
+        if (det) {
+          items.push({
+            submission_id: det.submission_id,
+            risk_level: det.assessment?.risk_level || 'medium',
+            classification: det.assessment?.classification || 'suspicious',
+            fraud_score: det.assessment?.fraud_score || 0.5,
+            received_at: det.ingested_at,
+            sender: det.sender || 'Unknown Sender',
+            recipient: det.recipient || 'Internal Security',
+            subject: det.subject || det.file_name || 'Uploaded Artifact',
+            origin_ip: det.assessment?.origin?.originating_ip || 'N/A',
+            origin_asn: det.assessment?.origin?.geolocation?.asn || 'AS-Custom',
+            status: det.status || 'complete'
+          });
+        }
+      }
+      return items;
+    } catch {
+      return [];
+    }
+  },
+
   async listEmails(params?: {
     risk_level?: string;
     classification?: string;
@@ -92,14 +151,35 @@ export const api = {
       query.set('page_size', String(pageSize));
     }
     const qs = query.toString();
-    const data = await request<any>(`/emails${qs ? `?${qs}` : ''}`);
-    const results = Array.isArray(data) ? data : (data?.results || []);
-    const total = data?.total ?? results.length;
+    const data = await request<any>(`/emails${qs ? `?${qs}` : ''}`).catch(() => ({ results: [], total: 0 }));
+    let results: EmailListItem[] = Array.isArray(data) ? data : (data?.results || []);
+
+    // Merge local cached submissions if not present in backend query response
+    const localItems = this.getLocalCachedSubmissions();
+    for (const item of localItems) {
+      if (!results.some(r => r.submission_id === item.submission_id)) {
+        results.unshift(item);
+      }
+    }
+
+    const total = Math.max(data?.total ?? results.length, results.length);
     return { results, total, page: data?.page || 1, limit: pageSize || 25, page_size: pageSize || 25 };
   },
 
   async getEmailDetail(submissionId: string): Promise<EmailDetail> {
-    return request<EmailDetail>(`/emails/${submissionId}`);
+    try {
+      const data = await request<EmailDetail>(`/emails/${submissionId}`);
+      if (data) {
+        this.cacheDetail(data);
+      }
+      return data;
+    } catch (err: any) {
+      const cached = this.getCachedDetail(submissionId);
+      if (cached) {
+        return cached;
+      }
+      throw err;
+    }
   },
 
   async refreshEmail(submissionId: string): Promise<EmailDetail> {
@@ -108,13 +188,17 @@ export const api = {
     });
   },
 
-  async ingestRawEmail(file: File): Promise<{ submission_id: string; status: string }> {
+  async ingestRawEmail(file: File): Promise<{ submission_id: string; status: string; detail?: EmailDetail }> {
     const formData = new FormData();
     formData.append('file', file);
-    return request<{ submission_id: string; status: string }>('/emails/ingest', {
+    const resp = await request<{ submission_id: string; status: string; detail?: EmailDetail }>('/emails/ingest', {
       method: 'POST',
       body: formData,
     });
+    if (resp.detail) {
+      this.cacheDetail(resp.detail);
+    }
+    return resp;
   },
 
   async getEvidenceChain(submissionId: string): Promise<EvidenceChain> {

@@ -145,11 +145,6 @@ class ErrorResponse(BaseModel):
 # 📥 Ingestion & Email List Schemas
 # ==========================================
 
-class IngestResponse(BaseModel):
-    submission_id: str
-    status: Literal["queued", "analyzing", "complete", "failed"] = "queued"
-    estimated_processing: Literal["sync", "async"] = "sync"
-
 class EmailDetailResponse(BaseModel):
     submission_id: str
     status: Literal["queued", "analyzing", "complete", "failed"]
@@ -160,6 +155,12 @@ class EmailDetailResponse(BaseModel):
     recipient: Optional[str] = None
     subject: Optional[str] = None
     assessment: Optional[FraudAssessment] = None
+
+class IngestResponse(BaseModel):
+    submission_id: str
+    status: Literal["queued", "analyzing", "complete", "failed"] = "queued"
+    estimated_processing: Literal["sync", "async"] = "sync"
+    detail: Optional[EmailDetailResponse] = None
 
 class EmailListItem(BaseModel):
     submission_id: str

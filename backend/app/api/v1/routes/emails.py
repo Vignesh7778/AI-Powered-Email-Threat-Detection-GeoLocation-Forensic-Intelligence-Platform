@@ -114,15 +114,29 @@ async def ingest_email(
     )
 
     # Execute synchronous analysis
+    assessment_res = None
     try:
-        pipeline_orchestrator.analyze_submission(submission_obj, db=db, actor="gateway_pipeline")
+        assessment_res = pipeline_orchestrator.analyze_submission(submission_obj, db=db, actor="gateway_pipeline")
     except Exception as e:
         print(f"Pipeline error for submission {submission_id}: {e}")
 
+    detail_obj = EmailDetailResponse(
+        submission_id=submission_id,
+        status="complete",
+        ingested_at=sub.ingested_at.isoformat() if sub.ingested_at else datetime.now(timezone.utc).isoformat(),
+        file_name=sub.file_name,
+        sha256_hash=sub.sha256_hash,
+        sender=sub.sender,
+        recipient=sub.recipient,
+        subject=sub.subject,
+        assessment=assessment_res
+    )
+
     return IngestResponse(
         submission_id=submission_id,
-        status="analyzing",
-        estimated_processing="sync"
+        status="complete",
+        estimated_processing="sync",
+        detail=detail_obj
     )
 
 @router.post("/{submission_id}/refresh", response_model=EmailDetailResponse)
