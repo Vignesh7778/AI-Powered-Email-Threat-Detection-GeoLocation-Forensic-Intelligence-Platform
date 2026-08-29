@@ -168,7 +168,10 @@ class EmailListItem(BaseModel):
     fraud_score: Optional[float] = None
     received_at: str
     sender: Optional[str] = None
+    recipient: Optional[str] = None
     subject: Optional[str] = None
+    origin_ip: Optional[str] = None
+    origin_asn: Optional[str] = None
     status: str
 
 class EmailListResponse(BaseModel):

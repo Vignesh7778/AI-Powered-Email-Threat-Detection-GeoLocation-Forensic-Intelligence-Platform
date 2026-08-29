@@ -185,8 +185,12 @@ def list_emails(
     classification: Optional[str] = None,
     page: int = Query(1, ge=1),
     page_size: int = Query(25, ge=1, le=100),
+    limit: Optional[int] = Query(None),
     db: Session = Depends(get_db)
 ):
+    if limit is not None:
+        page_size = max(1, min(limit, 100))
+
     query = db.query(Submission)
     if tenant_id:
         query = query.filter(Submission.tenant_id == tenant_id)
@@ -205,6 +209,13 @@ def list_emails(
         if classification and c_class != classification:
             continue
 
+        orig_ip = None
+        orig_asn = None
+        if s.assessment and s.assessment.raw_assessment:
+            orig = s.assessment.raw_assessment.get("origin", {})
+            orig_ip = orig.get("origin_ip") or orig.get("originating_ip")
+            orig_asn = orig.get("asn", {}).get("asn") or orig.get("geolocation", {}).get("asn")
+
         results.append(
             EmailListItem(
                 submission_id=s.submission_id,
@@ -213,7 +224,10 @@ def list_emails(
                 fraud_score=f_score if f_score is not None else 0.0,
                 received_at=s.received_at.isoformat() if s.received_at else (s.ingested_at.isoformat() if s.ingested_at else ""),
                 sender=s.sender or "Unknown Sender",
+                recipient=s.recipient or "security-team@org.gov",
                 subject=s.subject or "No Subject",
+                origin_ip=orig_ip,
+                origin_asn=orig_asn,
                 status=s.status or "complete"
             )
         )

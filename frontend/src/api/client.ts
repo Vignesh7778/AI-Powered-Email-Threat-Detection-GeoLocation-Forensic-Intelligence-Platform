@@ -66,7 +66,11 @@ export const api = {
   },
 
   async getDashboardStats(): Promise<DashboardStats> {
-    return request<DashboardStats>('/dashboard/stats');
+    try {
+      return await request<DashboardStats>('/dashboard/stats');
+    } catch {
+      return await request<DashboardStats>('/dashboard/summary');
+    }
   },
 
   async listEmails(params?: {
@@ -75,15 +79,23 @@ export const api = {
     search?: string;
     page?: number;
     limit?: number;
-  }): Promise<{ results: EmailListItem[]; total: number; page: number; limit: number }> {
+    page_size?: number;
+  }): Promise<{ results: EmailListItem[]; total: number; page: number; limit: number; page_size: number }> {
     const query = new URLSearchParams();
-    if (params?.risk_level) query.set('risk_level', params.risk_level);
-    if (params?.classification) query.set('classification', params.classification);
+    if (params?.risk_level && params.risk_level !== 'all') query.set('risk_level', params.risk_level);
+    if (params?.classification && params.classification !== 'all') query.set('classification', params.classification);
     if (params?.search) query.set('search', params.search);
     if (params?.page) query.set('page', String(params.page));
-    if (params?.limit) query.set('limit', String(params.limit));
+    const pageSize = params?.limit || params?.page_size;
+    if (pageSize) {
+      query.set('limit', String(pageSize));
+      query.set('page_size', String(pageSize));
+    }
     const qs = query.toString();
-    return request<{ results: EmailListItem[]; total: number; page: number; limit: number }>(`/emails${qs ? `?${qs}` : ''}`);
+    const data = await request<any>(`/emails${qs ? `?${qs}` : ''}`);
+    const results = Array.isArray(data) ? data : (data?.results || []);
+    const total = data?.total ?? results.length;
+    return { results, total, page: data?.page || 1, limit: pageSize || 25, page_size: pageSize || 25 };
   },
 
   async getEmailDetail(submissionId: string): Promise<EmailDetail> {

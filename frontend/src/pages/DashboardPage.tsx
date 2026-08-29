@@ -31,15 +31,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onSelectSubmission
   const loadData = async () => {
     try {
       const [s, e, a] = await Promise.all([
-        api.getDashboardStats(),
-        api.listEmails({ page: 1, limit: 8 }),
-        api.listAlerts(false)
+        api.getDashboardStats().catch(() => null),
+        api.listEmails({ page: 1, limit: 8 }).catch(() => ({ results: [], total: 0, page: 1, limit: 8, page_size: 8 })),
+        api.listAlerts(false).catch(() => [])
       ]);
-      setStats(s);
-      setRecentEmails(e.results);
-      setAlerts(a.slice(0, 5));
+      if (s) setStats(s);
+      if (e && Array.isArray(e.results)) setRecentEmails(e.results);
+      if (Array.isArray(a)) setAlerts(a.slice(0, 5));
     } catch {
-      // Clean state
+      // Ignored
     } finally {
       setLoading(false);
       setRefreshing(false);
