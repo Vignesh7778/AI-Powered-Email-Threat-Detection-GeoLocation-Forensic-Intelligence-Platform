@@ -24,11 +24,9 @@ class GeoLocationProvider:
         except ValueError:
             return True
 
-    def lookup(self, ip: str) -> GeoLocation:
-        ip = ip.strip()
+    def lookup(self, ip: Optional[str]) -> GeoLocation:
         queried_at = datetime.now(timezone.utc).isoformat()
-
-        if not ip:
+        if not ip or not isinstance(ip, str) or not ip.strip():
             return GeoLocation(
                 country="Unknown",
                 region="Unknown",
@@ -41,6 +39,8 @@ class GeoLocationProvider:
                 status="empty_ip",
                 provenance={"provider": "input_validator", "queried_at": queried_at, "status": "empty"}
             )
+
+        ip = ip.strip()
 
         # Check Cache
         if ip in self._cache:

@@ -1,6 +1,6 @@
 import dns.resolver
 import ipaddress
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 from backend.app.schemas.schemas import InfraFlagsResponse
 
@@ -16,14 +16,12 @@ class ThreatIntelProvider:
         ("bl.spamcop.net", "SpamCop Blocking List")
     ]
 
-    def get_flags(self, ip: str) -> InfraFlagsResponse:
-        ip = ip.strip()
+    def get_flags(self, ip: Optional[str]) -> InfraFlagsResponse:
         queried_at = datetime.now(timezone.utc).isoformat()
-        flags: List[str] = []
-        sources: List[str] = []
+        if not ip or not isinstance(ip, str) or not ip.strip():
+            return InfraFlagsResponse(ip=ip or "", flags=[], source_lists=["No IP supplied"])
 
-        if not ip:
-            return InfraFlagsResponse(ip=ip, flags=[], source_lists=["No IP supplied"])
+        ip = ip.strip()
 
         try:
             ip_obj = ipaddress.ip_address(ip)

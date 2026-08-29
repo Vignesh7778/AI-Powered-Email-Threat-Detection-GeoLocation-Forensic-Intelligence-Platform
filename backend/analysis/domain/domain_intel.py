@@ -11,13 +11,12 @@ class DomainIntelProvider:
     Never fabricates missing values or guesses domain ages.
     """
 
-    def analyze(self, domain: str) -> Dict[str, Any]:
-        domain = domain.lower().strip()
+    def analyze(self, domain: Optional[str]) -> Dict[str, Any]:
         queried_at = datetime.now(timezone.utc).isoformat()
 
-        if not domain or "." not in domain:
+        if not domain or not isinstance(domain, str) or not domain.strip() or "." not in domain:
             return {
-                "domain": domain,
+                "domain": domain or "unknown",
                 "domain_age_days": None,
                 "registrar": "Invalid Domain",
                 "mx_records": [],
@@ -29,6 +28,8 @@ class DomainIntelProvider:
                     "response_status": "invalid"
                 }
             }
+
+        domain = domain.lower().strip()
 
         resolver = dns.resolver.Resolver()
         resolver.timeout = 2.5

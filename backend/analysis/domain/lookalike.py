@@ -50,7 +50,15 @@ class LookalikeDetector:
             previous_row = current_row
         return previous_row[-1]
 
-    def check(self, domain: str, compare_against: Optional[List[str]] = None) -> LookalikeCheckResponse:
+    def check(self, domain: Optional[str], compare_against: Optional[List[str]] = None) -> LookalikeCheckResponse:
+        if not domain or not isinstance(domain, str) or not domain.strip():
+            return LookalikeCheckResponse(
+                domain=domain or "unknown",
+                lookalike_of=None,
+                technique=None,
+                score=0.0
+            )
+
         domain = domain.lower().strip()
         brand_list = compare_against or self.PROTECTED_BRANDS
 

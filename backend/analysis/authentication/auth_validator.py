@@ -12,9 +12,9 @@ class AuthValidator:
     Never fabricates SPF/DMARC records.
     """
 
-    def validate(self, raw_headers: str, sender_domain: str) -> AuthValidateResponse:
-        domain = sender_domain.lower().strip()
-        headers_lower = raw_headers.lower()
+    def validate(self, raw_headers: Optional[str], sender_domain: Optional[str]) -> AuthValidateResponse:
+        domain = (sender_domain or "").lower().strip()
+        headers_lower = (raw_headers or "").lower()
         queried_at = datetime.now(timezone.utc).isoformat()
 
         # 1. Parse authentic headers first
