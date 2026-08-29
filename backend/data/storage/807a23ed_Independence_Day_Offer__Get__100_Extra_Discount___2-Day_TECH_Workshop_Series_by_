@@ -1,0 +1,194 @@
+Delivered-To: vigneshdevi22@gmail.com
+Received: by 2002:a17:906:3843:b0:c11:3486:12a8 with SMTP id w3csp252132ejc;
+        Tue, 11 Aug 2026 01:09:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=3; AHgh+RrOhhyv8yUEnyDo/8th3WDqa4TBjk9YV1m06/BWeyeOAses68a5j+dh2b7NaHFxZk8OtX2DrC6GeGK0+eJz@gmail.com
+X-Received: by 2002:a17:907:3f8b:b0:c16:126b:98b4 with SMTP id a640c23a62f3a-c20e61b9ba8mr66991466b.3.1786435750990;
+        Tue, 11 Aug 2026 01:09:10 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1786435750; cv=pass;
+        d=google.com; s=arc-20260327;
+        b=Nv35NG5WKHEaGWowLvtDjgNwZyV9V1kRVdzFaG166gEEMfFvyh0gTxRIaJRkA4FXud
+         ar7qxgbIj5Wp62DJY6ZVYGByAiBmSG2iRoxN7LBikcYzVAIF1T/+kJju+PQiBRzty4zF
+         N8OmtFvjJCYrK4l4DRqMXnZAn1DMVj2iWicLUVlj2HVDGU6ABQ4eOvoFhBK5wV1ga+C5
+         ktDuvN1mbCm/+5kIcMZLWl061M4LgyEi5yNs4+pvUGRW5wJbJiiz8NV0uRPUkoJEYycs
+         KRZxdbIyS3SJdSxnTn7DP+4CfS0YbH449pSPMZQGTnXo7cHrYgOnA2NRT/1IZWWPAVkB
+         aFAg==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=N8Jl6ZWkDMByXf5RxakK2pfpDchNEAZCqCMKHM1KEhc=;
+        fh=Nlf2ycp3KoU/sytRFk8vnlJEmjU9viSbjeOiLFboRoI=;
+        b=RuiEPGXIj82h7CXBg/egwsN2ap+YYHUnpFEkUWKV0t+ywH0OImEX14lF4SvKDBRUDR
+         KW3XNzphVXduo3fH+BKKyQyNSTSXwrsrTOxFESfvAoqTNDoGfXRrTIkYpWXInk8Q/Xh2
+         DUmRPQPb+I6v8WkyVLnFWAnbyS9J3FM4g725ogR0lpfa9gc8lEJRX4CjKyP6p//ZGbuo
+         5aTL76ybdG9+PTcF9bSkUDWL6EXrXz694ZHWNZMxOXv+lb/XiAKnoeINytyvxzRbcuOM
+         Ixz3ds6y813bWUguvgLHjRbcRp5YPJh02o+E1VLLH7C7cumQlA57ukzDpVIylb6/8ViJ
+         SM6g==;
+        dara=google.com
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20251104 header.b=ewpTSt9V;
+       arc=pass (i=1);
+       spf=pass (google.com: domain of techruhi2024@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=techruhi2024@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+Return-Path: <techruhi2024@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id a640c23a62f3a-c20e4285c10sor24775866b.13.2026.08.11.01.09.10
+        for <vigneshdevi22@gmail.com>
+        (Google Transport Security);
+        Tue, 11 Aug 2026 01:09:10 -0700 (PDT)
+Received-SPF: pass (google.com: domain of techruhi2024@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20251104 header.b=ewpTSt9V;
+       arc=pass (i=1);
+       spf=pass (google.com: domain of techruhi2024@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=techruhi2024@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+ARC-Seal: i=1; a=rsa-sha256; t=1786435750; cv=none;
+        d=google.com; s=arc-20260327;
+        b=i/xqXnqy/RtYeHRtXKQotfcy2LQZxAHGgV69XtxaVxYn8FASsG29rq9F+75wBuGWnU
+         YeO7WWW5+KZ0opAwCk7rEw/OGxgQl6xfHNs5cGaCioksrDXUh5iNrdfgYz1HyaBva6yL
+         CVR4O8zPAixO5hS+egY/e/9MMPFVR+Dp7oEx82EC2PuvT2OGYpJvHb13ZdZ+qj/eoHaR
+         5MflFhgVsg+ypYehW9899XykMs2HN3qQAjo0ps0dbnhEDOjN4108/lc7CJTpkmM8yWuC
+         01ZpSYXXY0+xyUNSXfqz5yRcEEq1osAg+rx55hVdjjGpqSxYZq+xNzrTFGE1QGuoFwwR
+         V11Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=N8Jl6ZWkDMByXf5RxakK2pfpDchNEAZCqCMKHM1KEhc=;
+        fh=Nlf2ycp3KoU/sytRFk8vnlJEmjU9viSbjeOiLFboRoI=;
+        b=N8Wnq0VPrNT6Xn2VZkfb3seE8tNoJPy0iUajPwS5h2bMsu+USt9/xJAANcYHHfEINd
+         aol74oGQwnxhPmAWXwP8NSJdDqJBXQJ2b/+21wRh+/DE0bHWPYjLQsmnspqIuvG1pI9u
+         JOm6iBOxkMWRaaRvScbbl9y/Oz+FCnl9/BZQ97Ls95zBHt6vZBn34K7915GXlHCEeFMi
+         UMe65y/ZjW3ZsLi2j9eVOBWGhlBmelKyVtQVg9jsAdhiHSGFBJNjKH3V9nd3r9wmPLS7
+         cGiG9Aa+v7nbyyRK94UA7KoDUnRaXYEYuCN5PNSeU5T6+CCVz5WyR8XYBwuVsajUKhuW
+         nqTw==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786435750; x=1787040550; dara=google.com;
+        h=content-type:to:subject:message-id:date:from:mime-version:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=N8Jl6ZWkDMByXf5RxakK2pfpDchNEAZCqCMKHM1KEhc=;
+        b=ewpTSt9VE5kwkAv/CWOyYtgMfqQvnWlh+v5xz3tHxc5r9WzNwp2Sxuv1lo+M2QffJh
+         udmltZGsUzn+UA9J5Egtgfnvwc8flaGqbKQEGsyNis/8mazjqwj9RG538xjDOHhebwfk
+         DEGUCrl9k4sNqLx/zJ5qXQ+i4Lot77r6LcaLfNc1o6dHTS7XT1apYWtMRa3646EX3M/j
+         EVv4ZD1HSqUL6LHyeuhQ/UZajbMb7OAGmgL/UptEPTSFle9mwKYXcFupK6Ev6QTNOQFk
+         8wqzKZrPyMZQFeHFLaBqh1QaXTcbIt6ZR7DzxgINY0Uiha4nEiVb5KlXhE/HKUCLUyKD
+         00QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786435750; x=1787040550;
+        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=N8Jl6ZWkDMByXf5RxakK2pfpDchNEAZCqCMKHM1KEhc=;
+        b=PlWbyvRznCDcwJyZQJhPrnsu6K5IxQ243eEjOsz9fwU/2phF3iHA36TpT0YTsg3NsW
+         ekyNnFDjU5PqnYBUXg37I8OJs+ioYR7y88I3RchgP/0YgGaoTSzZ+//tPxR9R8wqetU5
+         qCWCWB/vYY2yHGPXv8ZhhFk9CYWhqABN+e4M2trZecPLh2QNtYgCh+oig4wF8xWbz6wY
+         w8LcISzl9aF+5YsEo2yuqqFziYSsiEdSXtwkEbMALHECq8fe4jYriWJVUvjP4o0nMdA1
+         fzcOwq+mjLMeVRyq8oob19Z5WEb+Wcf2/9SKiKilPax1/7upEA2O150r86td6oYsviQz
+         2lvQ==
+X-Forwarded-Encrypted: i=1; AHgh+RpwKZJYBUumr0hJDpvmoex9mkDGiDFDmYs9ONjwtnKuBM9GufTy0SRbbVcTYRq6edCSfymxc+fgIEsjBVsI@gmail.com
+X-Gm-Message-State: AOJu0Yz9nxCpaD33pVvysmbm9FIsypFlXSyDiTgiYuyCqcNJ0HmLg0Dd
+	+lEQdQyQVp10HkLaGDyczE/LoX6pLNlofCFdGqBQVKK7tvOI+6tFk9V6P8aPvAcYETmGXBsHsU5
+	70uuiY9yh04wKRa0LhOu9jWzx+pzIHzY=
+X-Gm-Gg: AR+sD108vAdnaV4J2wF+1MQ/FAwFOgoNLz3E1iDJcI20dkxPK4szjtJInwybMWyQ1z3
+	oGQ1jsIkljLMC3f2JKqk/h+jR6sg4Aebf7/BQMDwZwSgcGO7yVZz8+1NHeMGBrcqg68RgRBUcN5
+	B0xvsqyg8PRGKPzLvK7KYceGMVCNS1GVif+17OcoaNGfgF6W0vm7B3LPR92bmb6fUJCLd4O7YUR
+	K5cODgUB0l8fgUBkrrlVGu4GvXRpTAlwa71xHwXalXtQMBmAHcnoE0IqyMtPdUmpJKBJONj79lN
+	vU4f490B85zJnbAzYU/Niwxa+RLpN8Dha24hjX9h45cO9g7vvdYaV27xxzc=
+X-Received: by 2002:a05:6512:3b24:b0:5b0:1eed:f707 with SMTP id
+ 2adb3069b0e04-5b44861d2fcmr237530e87.23.1786435411654; Tue, 11 Aug 2026
+ 01:03:31 -0700 (PDT)
+MIME-Version: 1.0
+From: TECHRUHI <techruhi2024@gmail.com>
+Date: Tue, 11 Aug 2026 13:33:19 +0530
+X-Gm-Features: AUfX_myC8dM5eNesoM1P4ctMs6Cz7ZuQa1-1DEYa3o9DyFsczsch71OtHJIutuY
+Message-ID: <CAOWDPNpsu0xpXKbWwycG2snZ-pxnvQWCuXL19Q4=hZSzXPhWZA@mail.gmail.com>
+Subject: =?UTF-8?Q?Independence_Day_Offer=3A_Get_=E2=82=B9100_Extra_Discount_=7C_?=
+	=?UTF-8?Q?2=2DDay_TECH_Workshop_Series_by_Techobytes?=
+To: techobytes5@gmail.com
+Content-Type: multipart/alternative; boundary="000000000000203d930658c0e8de"
+Bcc: vigneshdevi22@gmail.com
+
+--000000000000203d930658c0e8de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Participant,
+
+*=F0=9F=87=AE=F0=9F=87=B3 **Independence Day Special Offer! **=F0=9F=87=AE=
+=F0=9F=87=B3*
+
+
+*Independence Day Offer: Use code TECH to get =E2=82=B9100 extra off! Regis=
+tration
+closes on 15th August.*
+
+*Join the 2-Day TECH WORKSHOP SERIES 2026 by Techobytes.*
+
+*Venue:* IIT Madras Research Park, Chennai
+*Date:* 29th=E2=80=9330th August 2026
+*Time:* 10:00 AM =E2=80=93 5:00 PM
+
+*Registration Link:  <http://goog_1396561172/>*https://tbytes.mojo.page/mea
+
+*Fee:* =E2=82=B93,500 *Discounted Fee:* =E2=82=B92,800 *(Includes 2 Days Lu=
+nch)*
+
+*Workshop Topics:*
+Generative AI | Drone Technology | AI & Bioinformatics | No-Code App
+Development | IoT-Robotics-ROS | AI in Film/Video Making | Cyber Security
+
+*Certification:* Hardcopy Certificate by Techobytes
+
+*Eligibility:* Students, Graduates & Working Professionals
+
+For queries: *Ruhi (Program Coordinator) *8882693976 | 9643065735
+
+Best Regards,
+*Team Techobytes*
+
+--000000000000203d930658c0e8de
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div id=3D"gmail-:1tx" class=3D"gmail-Am gmail-aiL gmail-A=
+l editable gmail-LW-avf gmail-tS-tW gmail-tS-tY" aria-label=3D"Message Body=
+" role=3D"textbox" aria-multiline=3D"true" tabindex=3D"1" style=3D"directio=
+n:ltr;min-height:252px" aria-controls=3D":1wc" aria-expanded=3D"false"><div=
+ id=3D"gmail-:1h1" class=3D"gmail-Am gmail-aiL gmail-Al editable gmail-LW-a=
+vf gmail-tS-tW gmail-tS-tY" aria-label=3D"Message Body" role=3D"textbox" ar=
+ia-multiline=3D"true" tabindex=3D"1" style=3D"direction:ltr;min-height:252p=
+x" aria-controls=3D":1jg" aria-expanded=3D"false"><div id=3D"gmail-:12r" cl=
+ass=3D"gmail-Am gmail-aiL gmail-Al editable gmail-LW-avf gmail-tS-tW gmail-=
+tS-tY" aria-label=3D"Message Body" role=3D"textbox" aria-multiline=3D"true"=
+ tabindex=3D"1" style=3D"direction:ltr;min-height:252px" aria-controls=3D":=
+156" aria-expanded=3D"false"><div id=3D"gmail-:rh" class=3D"gmail-Am gmail-=
+aiL gmail-Al editable gmail-LW-avf gmail-tS-tW gmail-tS-tY" aria-label=3D"M=
+essage Body" role=3D"textbox" aria-multiline=3D"true" tabindex=3D"1" style=
+=3D"direction:ltr;min-height:252px" aria-controls=3D":tw" aria-expanded=3D"=
+false"><p>Dear Participant,</p><p><strong style=3D"background-color:transpa=
+rent">=F0=9F=87=AE=F0=9F=87=B3=C2=A0</strong><strong>Independence Day Speci=
+al Offer!=C2=A0</strong><strong style=3D"background-color:transparent">=F0=
+=9F=87=AE=F0=9F=87=B3</strong></p><div></div><div><div><div><div><div dir=
+=3D"auto"><div><div><p><strong>Independence Day Offer: Use code=C2=A0<font =
+color=3D"#ff9900">TECH</font>=C2=A0to get =E2=82=B9100 extra off! Registrat=
+ion closes on 15th August.<br></strong><br><strong>Join the 2-Day TECH WORK=
+SHOP SERIES 2026 by Techobytes.<br></strong></p></div></div></div></div></d=
+iv></div></div><p><strong>Venue:</strong>=C2=A0IIT Madras Research Park, Ch=
+ennai<br><strong>Date:</strong>=C2=A029th=E2=80=9330th August 2026<br><stro=
+ng>Time:</strong>=C2=A010:00 AM =E2=80=93 5:00 PM</p><p><b>Registration Lin=
+k:<a href=3D"http://goog_1396561172/" target=3D"_blank">=C2=A0</a></b><a hr=
+ef=3D"https://tbytes.mojo.page/mea" target=3D"_blank">https://tbytes.mojo.p=
+age/mea</a><strong><br></strong></p><p><strong>Fee:</strong>=C2=A0=E2=82=B9=
+<strike>3,500</strike>=C2=A0<strong>Discounted Fee:</strong>=C2=A0=E2=82=B9=
+2,800=C2=A0<em>(Includes 2 Days Lunch)</em></p><p><strong>Workshop Topics:<=
+/strong><br>Generative AI | Drone Technology | AI &amp; Bioinformatics | No=
+-Code App Development | IoT-Robotics-ROS | AI in Film/Video Making | Cyber =
+Security<br><span style=3D"background-color:transparent"><br><b>Certificati=
+on:</b></span><span style=3D"background-color:transparent">=C2=A0</span>Har=
+dcopy<span style=3D"background-color:transparent">=C2=A0Certificate by Tech=
+obytes</span></p><p><strong>Eligibility:</strong>=C2=A0Students, Graduates =
+&amp; Working Professionals</p><p>For queries:=C2=A0<strong>Ruhi (Program C=
+oordinator)=C2=A0</strong>8882693976 | 9643065735<br></p><p>Best Regards,<b=
+r><strong>Team Techobytes</strong></p></div></div></div></div></div>
+
+--000000000000203d930658c0e8de--

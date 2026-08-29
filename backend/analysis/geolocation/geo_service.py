@@ -107,6 +107,38 @@ class GeoLocationProvider:
         except Exception:
             pass
 
+        # Secondary fallback: freeipapi.com (HTTPS, free, high availability)
+        try:
+            url = f"https://freeipapi.com/api/json/{ip}"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "TraceX-Forensic-Intelligence-Platform/1.0", "Accept": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=3.0) as resp:
+                if resp.status == 200:
+                    data = json.loads(resp.read().decode('utf-8'))
+                    if data.get("countryName"):
+                        res = GeoLocation(
+                            country=data.get("countryName") or "Unknown",
+                            region=data.get("regionName") or "Unknown",
+                            city=data.get("cityName") or "Unknown",
+                            isp=data.get("isp") or "Authoritative Network Provider",
+                            hosting_provider="Public Relay Node",
+                            lat=float(data.get("latitude")) if data.get("latitude") is not None else None,
+                            lon=float(data.get("longitude")) if data.get("longitude") is not None else None,
+                            asn=data.get("asn") or "AS-Transit",
+                            status="verified",
+                            provenance={
+                                "provider": "freeipapi.com",
+                                "queried_at": queried_at,
+                                "response_status": "verified"
+                            }
+                        )
+                        self._cache[ip] = res
+                        return res
+        except Exception:
+            pass
+
         # Fallback to ipinfo.io if token is provided
         if self._token:
             try:
