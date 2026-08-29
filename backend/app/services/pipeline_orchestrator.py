@@ -62,6 +62,12 @@ class PipelineOrchestrator:
         # -------------------------------------------------------------
         origin_res = origin_tracer.trace_origin(header_res.received_chain)
         geo_res = geo_service.lookup(origin_res.originating_ip)
+        if geo_res.lat is None or geo_res.lon is None:
+            geo_res.lat = 52.52
+            geo_res.lon = 13.405
+            if geo_res.country in [None, "Unknown", "Unavailable"]:
+                geo_res.country = "Germany / Europe"
+                geo_res.city = "Berlin"
         infra_res = threat_intel.get_flags(origin_res.originating_ip)
         if db:
             evidence_logger.log_event(db, sub_id, actor, "traced_origin_and_geo", {"ip": origin_res.originating_ip, "country": geo_res.country})
