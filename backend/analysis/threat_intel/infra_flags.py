@@ -22,6 +22,8 @@ class ThreatIntelProvider:
             return InfraFlagsResponse(ip=ip or "", flags=[], source_lists=["No IP supplied"])
 
         ip = ip.strip()
+        flags: List[str] = []
+        sources: List[str] = []
 
         try:
             ip_obj = ipaddress.ip_address(ip)
